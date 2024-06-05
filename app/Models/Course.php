@@ -18,8 +18,24 @@ class Course extends Model
         'price',
         'course_image',
         'start_date',
-        'published'
+        'published',
+        'classroom_id'
     ];
+
+    public function classroom()
+    {
+        return $this->belongsTo(Classroom::class);
+    }
+
+    public function enrollments()
+    {
+        return $this->hasMany(Enrollment::class);
+    }
+
+    public function courseRequests()
+    {
+        return $this->hasMany(CourseRequest::class);
+    }
 
     public function teachers(){
         return $this->belongsToMany(User::class, 'course_user');
@@ -65,6 +81,7 @@ class Course extends Model
     {
         return $this->belongsToMany(User::class, 'course_user', 'course_id', 'user_id');
     }
+
 
 }
 

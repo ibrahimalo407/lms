@@ -9,14 +9,17 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ZoomController;
 use Laravel\Socialite\Facades\Socialite;
 use App\Http\Controllers\LessonController;
+use App\Http\Controllers\ClassroomController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\TestController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ZoomMeetingController;
-use App\Http\Controllers\Admin\CourseController;
+use App\Http\Controllers\CourseController;
+use App\Http\Controllers\CourseRequestController;
 use App\Http\Controllers\Admin\QuestionController;
 use App\Http\Controllers\Admin\VirtualClassController;
 use App\Http\Controllers\Admin\QuestionOptionController;
+use App\Http\Controllers\AdminController;
 
 /*
 |--------------------------------------------------------------------------
@@ -72,26 +75,32 @@ Route::group(['middleware' => ['isAdmin'], 'prefix' => 'admin', 'as' => 'admin.'
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 });
 
+// use App\Http\Controllers\AdminController;
 
-Route::get('login/zoom', [ZoomController::class, 'redirectToProvider'])->name('login.zoom');
-Route::get('zoom/callback', [ZoomController::class, 'handleProviderCallback']);
-Route::post('zoom/meeting/create', [ZoomController::class, 'createZoomMeeting'])->name('zoom.meeting.create');
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/admin/course-requests', [AdminController::class, 'courseRequests'])->name('admin.course-requests');
+    Route::post('/admin/course-requests/{request}/approve', [AdminController::class, 'approveRequest'])->name('admin.course-requests.approve');
+    Route::post('/admin/course-requests/{request}/reject', [AdminController::class, 'rejectRequest'])->name('admin.course-requests.reject');
+});
 
 
-// Route::get('login/zoom', function () {
-//     return Socialite::driver('zoom')
-//         ->scopes([
-//             'meeting:write:meeting',
-//             'meeting:write:registrant',
-//             'meeting:write:invite_links',
-//             'meeting:write:poll',
-//             'user:read:user'
-//         ])
-//         ->stateless()
-//         ->redirect();
-// })->name('login.zoom');
 
+// Route::get('login/zoom', [ZoomController::class, 'redirectToProvider'])->name('login.zoom');
 // Route::get('zoom/callback', [ZoomController::class, 'handleProviderCallback']);
+// Route::post('zoom/meeting/create', [ZoomController::class, 'createZoomMeeting'])->name('zoom.meeting.create');
+
+
+Route::resource('classrooms', ClassroomController::class);
+Route::resource('courses', CourseController::class);
+Route::resource('course-requests', CourseRequestController::class, ['only' => ['index', 'update']]);
+
+// les routes pour le catalogue de cours
+
+Route::get('/catalog', [CourseController::class, 'catalog'])->name('catalog');
+Route::post('/catalog/request/{course}', [CourseRequestController::class, 'store'])->name('course-requests.store');
+Route::get('/course-requests', [CourseRequestController::class, 'index'])->name('course-requests.index');
+Route::post('/course-requests/{id}', [CourseRequestController::class, 'update'])->name('course-requests.update');
+
 
 Route::middleware('auth')->group(function () {
     Route::get('meetings/create', function () {

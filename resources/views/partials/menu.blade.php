@@ -9,6 +9,14 @@
             </li>
             @can('course_access')
             <li class="nav-item">
+                <a href="{{ route('admin.course-requests') }}" class="nav-link {{ request()->is('admin/courses') || request()->is('admin/courses/*') ? 'active' : '' }}">
+                    <i class="nav-icon fas fa-gift"></i>
+                    Request
+                </a>
+            </li>
+            @endcan
+            @can('course_access')
+            <li class="nav-item">
                 <a href="{{ route('admin.courses.index') }}" class="nav-link {{ request()->is('admin/courses') || request()->is('admin/courses/*') ? 'active' : '' }}">
                     <i class="nav-icon fas fa-gift"></i>
                     Courses
@@ -20,6 +28,14 @@
                 <a href="{{ route('admin.virtual_classes.index') }}" class="nav-link {{ request()->is('admin/virtual_classes') || request()->is('admin/virtual_classes/*') ? 'active' : '' }}">
                     <i class="nav-icon fas fa-video"></i>
                     Virtual Classes
+                </a>
+            </li>            
+            @endcan
+            @can('course_access')
+            <li class="nav-item">
+                <a href="{{ route('classrooms.create') }}" class="nav-link {{ request()->is('admin/virtual_classes') || request()->is('admin/virtual_classes/*') ? 'active' : '' }}">
+                    <i class="nav-icon fas fa-video"></i>
+                    Create Classes
                 </a>
             </li>            
             @endcan

@@ -10,6 +10,9 @@
       rel="stylesheet"
     />
 
+    {{-- <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"> --}}
+
+
     <!-- swiper css -->
     <link rel="stylesheet" href="{{ asset('frontend/assets/libraries/swiper.css') }}" />
 
@@ -32,6 +35,9 @@
             </li>
             <li class="nav-item">
               <a href="{{ route('courses.index') }}" class="nav-link">Course</a>
+            </li>
+            <li class="nav-item">
+              <a href="{{ route('catalog') }}" class="nav-link">Course Catalog</a>
             </li>
             <li class="nav-item">
               <a href="http://127.0.0.1:8000/chatify" class="nav-link">Mes Messages</a>

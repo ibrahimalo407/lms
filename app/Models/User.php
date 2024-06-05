@@ -71,4 +71,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(TestResult::class);
     }
+
+    public function courses()
+    {
+        return $this->belongsToMany(Course::class, 'course_student')->withPivot('rating');
+    }
+
 }

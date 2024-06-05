@@ -22,6 +22,7 @@ class CreateCoursesTable extends Migration
             $table->string('course_image')->nullable();
             $table->date('start_date')->nullable();
             $table->tinyInteger('published')->nullable()->default(0);
+            $table->foreignId('classroom_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
             $table->softDeletes();
         });
@@ -35,5 +36,10 @@ class CreateCoursesTable extends Migration
     public function down()
     {
         Schema::dropIfExists('courses');
+        
+        Schema::table('courses', function (Blueprint $table) {
+            $table->dropForeign(['classroom_id']);
+            $table->dropColumn('classroom_id');
+        });
     }
 }

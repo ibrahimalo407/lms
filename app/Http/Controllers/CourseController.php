@@ -3,15 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Models\Course;
+use App\Models\Classroom;
+use App\Models\Enrollment;
+use App\Models\CourseRequest;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 
 class CourseController extends Controller
 {
-    public function index(){
-
-        $courses =  Course::where('published', 1)->latest()->get();
+    // Affiche les cours publiés et les cours achetés
+    public function index()
+    {
+        $courses = Course::where('published', 1)->latest()->get();
         $purchased_courses = [];
+
         if (auth()->check()) {
             $purchased_courses = Course::whereHas('students', function($query) {
                 $query->where('users.id', auth()->id());
@@ -21,19 +26,19 @@ class CourseController extends Controller
             ->get();
         }
 
-        return view('courses', compact('courses','purchased_courses'));
+        return view('courses', compact('courses', 'purchased_courses'));
     }
 
+    // Affiche un cours spécifique
     public function show($course_slug)
     {
         $course = Course::where('slug', $course_slug)->with('publishedLessons')->firstOrFail();
-        $purchased_course = auth()->check() && $course->students()->where('user_id', auth()->id())->count() > 0;
+        $purchased_course = auth()->check() && $course->students()->where('user_id', auth()->id())->exists();
 
         return view('course', compact('course', 'purchased_course'));
-
-
     }
 
+    // Traitement de paiement et inscription au cours
     public function payment(Request $request)
     {
         $course = Course::findOrFail($request->get('course_id'));
@@ -43,6 +48,7 @@ class CourseController extends Controller
         return redirect()->route('lessons.show', [$course->id, $request->lesson_id]);
     }
 
+    // Notation d'un cours par un étudiant
     public function rating($course_id, Request $request)
     {
         $course = Course::findOrFail($course_id);
@@ -51,26 +57,112 @@ class CourseController extends Controller
         return redirect()->back()->with('success', 'Thank you for rating.');
     }
 
-
+    // Stocker l'image pour un cours
     public function storeImageForCourse(Request $request, Course $course)
     {
-        // Vérifiez si le dossier pour les cours existe
         if (!Storage::exists('cours')) {
             Storage::makeDirectory('cours');
         }
 
-        // Stockez l'image dans le dossier des cours avec un nom unique
         $imagePath = $request->file('image')->store('cours', 'public');
-
-        // Associez le chemin d'accès de l'image à l'entité de cours
-        $course->image_path = $imagePath;
+        $course->course_image = $imagePath;
         $course->save();
 
-        // Vous pouvez également récupérer l'URL de l'image ainsi
         $imageUrl = Storage::url($imagePath);
 
-        // Faites ce dont vous avez besoin avec l'URL de l'image, par exemple, retournez-la ou l'utiliser dans une vue
         return response()->json(['image_url' => $imageUrl]);
     }
 
+    // Méthode pour afficher le catalogue des cours
+    public function catalog()
+    {
+        $requestedCourses = auth()->check() ? CourseRequest::where('user_id', auth()->id())->pluck('course_id')->toArray() : [];
+        $courses = Course::where('published', 1)->whereNotIn('id', $requestedCourses)->get();
+
+        return view('catalog', compact('courses', 'requestedCourses'));
+    }
+
+   
+
+    // // Gère les demandes d'inscription aux cours
+    // public function requestCourse($course_id)
+    // {
+    //     $course = Course::findOrFail($course_id);
+
+    //     $existingRequest = CourseRequest::where('user_id', auth()->id())
+    //         ->where('course_id', $course_id)
+    //         ->first();
+
+    //     if ($existingRequest) {
+    //         return redirect()->back()->with('error', 'You have already requested access to this course.');
+    //     } else{
+
+    //         CourseRequest::create([
+    //             'user_id' => auth()->id(),
+    //             'course_id' => $course_id,
+    //             'status' => 'pending',
+    //         ]);
+    //     }
+
+
+    //     return redirect()->back()->with('success', 'Course request sent.');
+    // }
+
+    // Affiche le formulaire de création d'un cours
+    public function create()
+    {
+        $classrooms = Classroom::all();
+        return view('courses.create', compact('classrooms'));
+    }
+
+    // Stocke un nouveau cours dans la base de données
+    public function store(Request $request)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'price' => 'nullable|integer',
+            'course_image' => 'nullable|string',
+            'start_date' => 'nullable|date',
+            'classroom_id' => 'required|exists:classrooms,id',
+            'published' => 'nullable|boolean',
+        ]);
+
+        Course::create($request->all());
+
+        return redirect()->route('courses.index')->with('success', 'Course created successfully.');
+    }
+
+    // Affiche le formulaire d'édition d'un cours
+    public function edit(Course $course)
+    {
+        $classrooms = Classroom::all();
+        return view('courses.edit', compact('course', 'classrooms'));
+    }
+
+    // Met à jour un cours existant
+    public function update(Request $request, Course $course)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'price' => 'nullable|integer',
+            'course_image' => 'nullable|string',
+            'start_date' => 'nullable|date',
+            'classroom_id' => 'required|exists:classrooms,id',
+            'published' => 'nullable|boolean',
+        ]);
+
+        $course->update($request->all());
+
+        return redirect()->route('courses.index')->with('success', 'Course updated successfully.');
+    }
+
+    // Supprime un cours
+    public function destroy(Course $course)
+    {
+        $course->delete();
+        return redirect()->route('courses.index')->with('success', 'Course deleted successfully.');
+    }
 }
+

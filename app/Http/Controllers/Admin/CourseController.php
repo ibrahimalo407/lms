@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\User;
 use App\Models\Course;
+use App\Models\CourseRequest;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
@@ -33,6 +34,7 @@ class CourseController extends Controller
 
         return view('admin.courses.index', compact('courses'));
     }
+
 
     /**
      * Show the form for creating a new resource.
