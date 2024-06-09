@@ -17,6 +17,27 @@
             @endcan
             @can('course_access')
             <li class="nav-item">
+                <a href="{{ route('admin.groups.index') }}" class="nav-link {{ request()->is('admin/courses') || request()->is('admin/courses/*') ? 'active' : '' }}">
+                    <i class="nav-icon fas fa-gift"></i>
+                    Groups
+                </a>
+            </li>
+            @endcan
+            @can('group_access')
+            <li class="nav-item" class="{{ request()->is('admin/pedagogical-paths*') ? 'active' : '' }}">
+                <a href="{{ route('admin.pedagogical-paths.index') }}" class="nav-link">
+                    <i class="fa fa-book"></i>
+                    <span>Pedagogical Paths</span>
+                </a>
+            </li>            
+            @endcan
+
+            {{-- @can('group_access')
+                <li><a href="{{ route('admin.groups.index') }}">Groups</a></li>
+                <li><a href="{{ route('admin.pedagogical-paths.index') }}">Pedagogical Paths</a></li>
+            @endcan --}}
+            @can('course_access')
+            <li class="nav-item">
                 <a href="{{ route('admin.courses.index') }}" class="nav-link {{ request()->is('admin/courses') || request()->is('admin/courses/*') ? 'active' : '' }}">
                     <i class="nav-icon fas fa-gift"></i>
                     Courses
@@ -31,14 +52,14 @@
                 </a>
             </li>            
             @endcan
-            @can('course_access')
+            {{-- @can('course_access')
             <li class="nav-item">
                 <a href="{{ route('classrooms.create') }}" class="nav-link {{ request()->is('admin/virtual_classes') || request()->is('admin/virtual_classes/*') ? 'active' : '' }}">
                     <i class="nav-icon fas fa-video"></i>
                     Create Classes
                 </a>
             </li>            
-            @endcan
+            @endcan --}}
             @can('lesson_access')
             <li class="nav-item">
                 <a href="{{ route('admin.lessons.index') }}" class="nav-link {{ request()->is('admin/lessons') || request()->is('admin/lessons/*') ? 'active' : '' }}">

@@ -108,12 +108,6 @@ class CourseController extends Controller
     //     return redirect()->back()->with('success', 'Course request sent.');
     // }
 
-    // Affiche le formulaire de création d'un cours
-    public function create()
-    {
-        $classrooms = Classroom::all();
-        return view('courses.create', compact('classrooms'));
-    }
 
     // Stocke un nouveau cours dans la base de données
     public function store(Request $request)
@@ -133,12 +127,6 @@ class CourseController extends Controller
         return redirect()->route('courses.index')->with('success', 'Course created successfully.');
     }
 
-    // Affiche le formulaire d'édition d'un cours
-    public function edit(Course $course)
-    {
-        $classrooms = Classroom::all();
-        return view('courses.edit', compact('course', 'classrooms'));
-    }
 
     // Met à jour un cours existant
     public function update(Request $request, Course $course)

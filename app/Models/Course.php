@@ -22,9 +22,14 @@ class Course extends Model
         'classroom_id'
     ];
 
-    public function classroom()
+    // public function classroom()
+    // {
+    //     return $this->belongsTo(Classroom::class);
+    // }
+
+    public function pedagogicalPaths()
     {
-        return $this->belongsTo(Classroom::class);
+        return $this->belongsToMany(PedagogicalPath::class, 'course_pedagogical_path');
     }
 
     public function enrollments()

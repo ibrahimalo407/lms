@@ -61,7 +61,12 @@ class PermissionSeeder extends Seeder
             ['id' => 43, 'title' => 'test_edit',],
             ['id' => 44, 'title' => 'test_view',],
             ['id' => 45, 'title' => 'test_delete',],
-
+            ['id' => 46,'title' => 'group_access'],
+            ['id' => 47, 'title' => 'pedagogical_path_access'],
+            ['id' => 48, 'title' => 'pedagogical_path_create'],
+            ['id' => 49, 'title' => 'pedagogical_path_edit'],
+            ['id' => 50, 'title' => 'pedagogical_path_view'],
+            ['id' => 51, 'title' => 'pedagogical_path_delete'],
         ];
 
         foreach ($items as $item) {

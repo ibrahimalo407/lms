@@ -77,4 +77,21 @@ class User extends Authenticatable
         return $this->belongsToMany(Course::class, 'course_student')->withPivot('rating');
     }
 
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class);
+    }
+
+    public function hasPermission($permission)
+    {
+        return $this->roles()->whereHas('permissions', function ($query) use ($permission) {
+            $query->where('title', $permission);
+        })->exists();
+    }
+
+    public function groups()
+    {
+        return $this->belongsToMany(Group::class, 'group_user');
+    }
+
 }

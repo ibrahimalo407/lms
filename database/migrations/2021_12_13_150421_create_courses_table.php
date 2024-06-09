@@ -22,7 +22,6 @@ class CreateCoursesTable extends Migration
             $table->string('course_image')->nullable();
             $table->date('start_date')->nullable();
             $table->tinyInteger('published')->nullable()->default(0);
-            $table->foreignId('classroom_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
             $table->softDeletes();
         });
