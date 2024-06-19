@@ -2,8 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Group;
+use App\Models\Course;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class PedagogicalPath extends Model
 {
@@ -19,5 +22,10 @@ class PedagogicalPath extends Model
     public function groups()
     {
         return $this->belongsToMany(Group::class, 'group_pedagogical_path');
+    }
+
+    public function getPresentationVideoUrlAttribute()
+    {
+        return Storage::url($this->presentation_video);
     }
 }

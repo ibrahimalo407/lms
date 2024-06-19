@@ -102,6 +102,8 @@ Route::middleware(['auth', 'permission:group_access'])->prefix('admin')->name('a
 Route::middleware(['auth', 'groupOrPathPermission:pedagogical_path_access'])->prefix('admin')->name('admin.')->group(function() {
     Route::resource('groups', GroupController::class);
     Route::resource('pedagogical-paths', PedagogicalPathController::class);
+    Route::post('pedagogical-paths/media', [PedagogicalPathController::class, 'storeMedia'])->name('pedagogical-paths.storeMedia');
+
 });
 
 // Route::resource('classrooms', ClassroomController::class);
