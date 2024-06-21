@@ -22,18 +22,6 @@ class PedagogicalPathController extends Controller
         return view('admin.pedagogical_paths.form', compact('courses'));
     }
 
-    
-    public function store(Request $request)
-    {
-        $data = $request->all();
-        $path = $request->file('presentation_video') ? $request->file('presentation_video')->store('pedagogical_videos') : null;
-        $data['presentation_video'] = $path;
-
-        $pedagogicalPath = PedagogicalPath::create($data);
-        $pedagogicalPath->courses()->sync($request->input('courses', []));
-
-        return redirect()->route('admin.pedagogical-paths.index')->with('success', 'Pedagogical Path created successfully');
-    }
 
     public function edit($id)
     {
@@ -42,21 +30,53 @@ class PedagogicalPathController extends Controller
         return view('admin.pedagogical_paths.form', compact('pedagogicalPath', 'courses'));
     }
 
-    public function update(Request $request, $id)
+    public function store(Request $request)
     {
-        $pedagogicalPath = PedagogicalPath::findOrFail($id);
-        $data = $request->all();
+        $data = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'courses' => 'nullable|array',
+            'courses.*' => 'exists:courses,id',
+            'presentation_video' => 'nullable|file|mimes:mp4,avi,mkv|max:51200'
+        ]);
 
-        if ($request->file('presentation_video')) {
-            Storage::delete($pedagogicalPath->presentation_video);
-            $path = $request->file('presentation_video')->store('pedagogical_videos');
-            $data['presentation_video'] = $path;
+        if ($request->hasFile('presentation_video')) {
+            $data['presentation_video'] = $request->file('presentation_video')->store('pedagogical_videos');
+        }
+
+        $pedagogicalPath = PedagogicalPath::create($data);
+
+        if (isset($data['courses'])) {
+            $pedagogicalPath->courses()->sync($data['courses']);
+        }
+
+        return redirect()->route('admin.pedagogical-paths.index')->with('success', 'Pedagogical Path created successfully.');
+    }
+
+    public function update(Request $request, PedagogicalPath $pedagogicalPath)
+    {
+        $data = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'courses' => 'nullable|array',
+            'courses.*' => 'exists:courses,id',
+            'presentation_video' => 'nullable|file|mimes:mp4,avi,mkv|max:51200'
+        ]);
+
+        if ($request->hasFile('presentation_video')) {
+            if ($pedagogicalPath->presentation_video) {
+                Storage::delete($pedagogicalPath->presentation_video);
+            }
+            $data['presentation_video'] = $request->file('presentation_video')->store('pedagogical_videos');
         }
 
         $pedagogicalPath->update($data);
-        $pedagogicalPath->courses()->sync($request->input('courses', []));
 
-        return redirect()->route('admin.pedagogical-paths.index')->with('success', 'Pedagogical Path updated successfully');
+        if (isset($data['courses'])) {
+            $pedagogicalPath->courses()->sync($data['courses']);
+        }
+
+        return redirect()->route('admin.pedagogical-paths.index')->with('success', 'Pedagogical Path updated successfully.');
     }
 
 

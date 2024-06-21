@@ -2,73 +2,52 @@
 
 @section('content')
 <div class="container mt-5">
-    <h1 class="mb-4">Edit Group: {{ $group->name }}</h1>
+    <h1 class="mb-4">Edit Group</h1>
 
-    @if (session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    @if (session('error'))
+    @if ($errors->any())
         <div class="alert alert-danger">
-            {{ session('error') }}
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
         </div>
     @endif
 
-    <form action="{{ route('admin.groups.addStudent', $group->id) }}" method="POST">
+    <form action="{{ route('admin.groups.update', $group->id) }}" method="POST">
         @csrf
-        <div class="form-group">
-            <label for="student">Add Student:</label>
-            <select name="student_id" id="student" class="form-control">
-                @foreach ($students as $student)
-                    <option value="{{ $student->id }}">{{ $student->name }}</option>
-                @endforeach
-            </select>
-        </div>
-        <button type="submit" class="btn btn-primary">Add Student</button>
-    </form>
+        @method('PUT')
 
-    <h2 class="mt-5">Students in Group</h2>
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($group->students as $student)
-                <tr>
-                    <td>{{ $student->name }}</td>
-                    <td>
-                        <form action="{{ route('admin.groups.removeStudent', [$group->id, $student->id]) }}" method="POST" style="display:inline-block;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger">Remove</button>
-                        </form>
-                        <form action="{{ route('admin.groups.restrictStudent', [$group->id, $student->id]) }}" method="POST" style="display:inline-block;">
-                            @csrf
-                            <button type="submit" class="btn btn-warning">Restrict Access</button>
-                        </form>
-                    </td>
-                </tr>
+        <div class="form-group">
+            <label for="name">Group Name</label>
+            <input type="text" class="form-control" id="name" name="name" value="{{ $group->name }}">
+        </div>
+
+        <div class="form-group">
+            <label for="students">Students</label>
+            @foreach($students as $student)
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="students[]" value="{{ $student->id }}" id="student{{ $student->id }}" {{ in_array($student->id, $group->students->pluck('id')->toArray()) ? 'checked' : '' }}>
+                    <label class="form-check-label" for="student{{ $student->id }}">
+                        {{ $student->name }}
+                    </label>
+                </div>
             @endforeach
-        </tbody>
-    </table>
-
-    <h2 class="mt-5">Assign Pedagogical Paths</h2>
-    <form action="{{ route('admin.groups.assignPaths', $group->id) }}" method="POST">
-        @csrf
-        <div class="form-group">
-            <label for="paths">Pedagogical Paths</label>
-            <select name="path_ids[]" id="paths" class="form-control" multiple>
-                @foreach ($paths as $path)
-                    <option value="{{ $path->id }}" {{ $group->pedagogicalPaths->contains($path->id) ? 'selected' : '' }}>{{ $path->title }}</option>
-                @endforeach
-            </select>
         </div>
-        <button type="submit" class="btn btn-primary">Assign Paths</button>
+
+        <div class="form-group">
+            <label for="pedagogical_paths">Pedagogical Paths</label>
+            @foreach($pedagogicalPaths as $pedagogicalPath)
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="pedagogical_paths[]" value="{{ $pedagogicalPath->id }}" id="pedagogicalPath{{ $pedagogicalPath->id }}" {{ in_array($pedagogicalPath->id, $group->pedagogicalPaths->pluck('id')->toArray()) ? 'checked' : '' }}>
+                    <label class="form-check-label" for="pedagogicalPath{{ $pedagogicalPath->id }}">
+                        {{ $pedagogicalPath->title }}
+                    </label>
+                </div>
+            @endforeach
+        </div>
+
+        <button type="submit" class="btn btn-primary">Update</button>
     </form>
 </div>
 @endsection

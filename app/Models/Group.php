@@ -11,9 +11,9 @@ class Group extends Model
 
     protected $fillable = ['name'];
 
-    public function students()
+    public function users()
     {
-        return $this->belongsToMany(User::class, 'group_user');
+        return $this->belongsToMany(User::class);
     }
 
     public function pedagogicalPaths()
