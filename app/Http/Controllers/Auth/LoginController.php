@@ -45,6 +45,6 @@ class LoginController extends Controller
             return '/admin/dashboard'; // Changez le chemin vers votre tableau de bord
         }
 
-        return '/home'; // Changez le chemin selon vos besoins
+        return '/'; // Changez le chemin selon vos besoins
     }
 }

@@ -91,19 +91,27 @@ Route::middleware(['auth', 'admin'])->group(function () {
 // Route::get('zoom/callback', [ZoomController::class, 'handleProviderCallback']);
 // Route::post('zoom/meeting/create', [ZoomController::class, 'createZoomMeeting'])->name('zoom.meeting.create');
 
+// Route::middleware(['auth', 'permission:group_access'])->prefix('admin')->name('admin.')->group(function () {
+//     Route::resource('groups', GroupController::class);
+//     // Route::post('groups/{group}/addStudent', [GroupController::class, 'addStudent'])->name('groups.addStudent');
+//     Route::put('groups/{group}/updateRestriction/{user}', 'GroupController@updateRestriction')->name('groups.updateRestriction');
+//     Route::delete('groups/{group}/removeUser/{user}', 'GroupController@removeUser')->name('groups.removeUser');
+//     Route::get('restricted-students', 'GroupController@restrictedStudents')->name('groups.restrictedStudents');
+// });
+
 Route::middleware(['auth', 'permission:group_access'])->prefix('admin')->name('admin.')->group(function () {
     Route::resource('groups', GroupController::class);
-    Route::post('groups/{group}/addStudent', [GroupController::class, 'addStudent'])->name('groups.addStudent');
-    Route::delete('groups/{group}/removeStudent/{student}', [GroupController::class, 'removeStudent'])->name('groups.removeStudent');
-    Route::post('groups/{group}/restrictStudent/{student}', [GroupController::class, 'restrictStudent'])->name('groups.restrictStudent');
-    Route::post('groups/{group}/assignPaths', [GroupController::class, 'assignPaths'])->name('groups.assignPaths');
+    Route::get('groups/{group}/students', [GroupController::class, 'showStudents'])->name('groups.showStudents');
+    Route::post('groups/{group}/students/{student}/restrict', [GroupController::class, 'restrictStudent'])->name('groups.restrictStudent');
+    Route::post('groups/{group}/students/{student}/remove', [GroupController::class, 'removeStudent'])->name('groups.removeStudent');
+    Route::get('groups/{group}/students/restricted', [GroupController::class, 'showRestrictedStudents'])->name('groups.showRestrictedStudents');
 });
+
+
 
 Route::middleware(['auth', 'groupOrPathPermission:pedagogical_path_access'])->prefix('admin')->name('admin.')->group(function() {
     Route::resource('groups', GroupController::class);
     Route::resource('pedagogical-paths', PedagogicalPathController::class);
-    Route::post('pedagogical-paths/media', [PedagogicalPathController::class, 'storeMedia'])->name('pedagogical-paths.storeMedia');
-
 });
 
 // Route::resource('classrooms', ClassroomController::class);

@@ -18,35 +18,56 @@ class CourseController extends Controller
         $purchased_courses = [];
 
         if (auth()->check()) {
-            $purchased_courses = Course::whereHas('students', function($query) {
+            $purchased_courses = Course::whereHas('students', function ($query) {
                 $query->where('users.id', auth()->id());
             })
-            ->with('lessons')
-            ->orderBy('id', 'desc')
-            ->get();
+                ->with('lessons')
+                ->orderBy('id', 'desc')
+                ->get();
         }
 
         return view('courses', compact('courses', 'purchased_courses'));
     }
 
     // Affiche un cours spécifique
+
     public function show($course_slug)
     {
-        $course = Course::where('slug', $course_slug)->with('publishedLessons')->firstOrFail();
-        $purchased_course = auth()->check() && $course->students()->where('user_id', auth()->id())->exists();
+        $course = Course::where('slug', $course_slug)
+            ->with('publishedLessons')
+            ->firstOrFail();
+
+        $user = auth()->user();
+
+        // Vérifiez si l'utilisateur est restreint dans l'un des groupes associés au cours
+        $isRestricted = $user->groups()
+            ->whereHas('pedagogicalPaths.courses', function ($query) use ($course) {
+                $query->where('courses.id', $course->id);
+            })
+            ->wherePivot('is_restricted', true)
+            ->exists();
+
+        if ($isRestricted) {
+            return redirect()->route('courses.index')
+                ->with('error', 'Votre accès est restreint, veuillez envoyer un message à l\'admin dans votre espace de chat.');
+        }
+
+        $purchased_course = $user && $course->students()->where('user_id', $user->id)->exists();
 
         return view('course', compact('course', 'purchased_course'));
     }
 
+
+
     // Traitement de paiement et inscription au cours
-    public function payment(Request $request)
-    {
-        $course = Course::findOrFail($request->get('course_id'));
+    // public function payment(Request $request)
+    // {
+    //     $course = Course::findOrFail($request->get('course_id'));
 
-        $course->students()->attach(auth()->id());
+    //     $course->students()->attach(auth()->id());
 
-        return redirect()->route('lessons.show', [$course->id, $request->lesson_id]);
-    }
+    //     return redirect()->route('lessons.show', [$course->id, $request->lesson_id]);
+    // }
 
     // Notation d'un cours par un étudiant
     public function rating($course_id, Request $request)
@@ -82,7 +103,7 @@ class CourseController extends Controller
         return view('catalog', compact('courses', 'requestedCourses'));
     }
 
-   
+
 
     // // Gère les demandes d'inscription aux cours
     // public function requestCourse($course_id)
@@ -153,4 +174,3 @@ class CourseController extends Controller
         return redirect()->route('courses.index')->with('success', 'Course deleted successfully.');
     }
 }
-
