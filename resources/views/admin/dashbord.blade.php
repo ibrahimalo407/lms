@@ -6,55 +6,56 @@
 
     <!-- Graphiques -->
     <div class="row">
-        <div class="col-lg-6">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Nombre de cours par mois</h6>
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header py-3 bg-primary text-white">
+                    <h6 class="m-0 font-weight-bold">Nombre de cours par mois</h6>
                 </div>
                 <div class="card-body">
                     <canvas id="coursesChart" width="400" height="200"></canvas>
                 </div>
             </div>
         </div>
-        <div class="col-lg-6">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Les 10 leçons les plus récentes</h6>
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header py-3 bg-primary text-white">
+                    <h6 class="m-0 font-weight-bold">Les 10 leçons les plus récentes</h6>
                 </div>
                 <div class="card-body">
                     <div class="list-group">
                         @foreach ($recentLessons as $lesson)
-                        <a href="#" class="list-group-item list-group-item-action">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span>{{ $lesson->title }}</span>
-                                <span class="badge badge-primary badge-pill">{{ $lesson->course->title }}</span>
-                            </div>
-                        </a>                       
+                        <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                            <span>{{ $lesson->title }}</span>
+                            <span class="badge bg-primary">{{ $lesson->course->title }}</span>
+                        </a>
                         @endforeach
+                        @if($recentLessons->isEmpty())
+                            <p class="text-muted">Aucune leçon récente trouvée.</p>
+                        @endif
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="row mt-4">
-        <div class="col-lg-6">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Nombre d'inscriptions par mois</h6>
+    <div class="row">
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header py-3 bg-primary text-white">
+                    <h6 class="m-0 font-weight-bold">Nombre d'inscriptions par mois</h6>
                 </div>
                 <div class="card-body">
                     <canvas id="enrollmentsChart" width="400" height="200"></canvas>
                 </div>
             </div>
         </div>
-        <div class="col-lg-6">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Graphique des meilleurs étudiants</h6>
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header py-3 bg-primary text-white">
+                    <h6 class="m-0 font-weight-bold">Graphique des meilleurs étudiants</h6>
                 </div>
                 <div class="card-body">
-                    <canvas id="topStudentsChart" width="800" height="400"></canvas>
+                    <canvas id="topStudentsChart" width="400" height="400"></canvas>
                 </div>
             </div>
         </div>
@@ -70,30 +71,87 @@
         var topStudentsData = {!! json_encode($topStudentsData) !!};
 
         // Création des graphiques
-        createChart('coursesChart', 'Nombre de cours par mois', coursesData, 'bar', '#7158e2');
-        createChart('enrollmentsChart', 'Nombre d\'inscriptions par mois', enrollmentsData, 'pie', '#ff3838');
+        createLineChart('coursesChart', 'Nombre de cours par mois', coursesData, 'rgba(113, 88, 226, 0.2)', 'rgba(113, 88, 226, 1)');
+        createBarChart('enrollmentsChart', 'Nombre d\'inscriptions par mois', enrollmentsData, 'rgba(255, 56, 56, 0.2)', 'rgba(255, 56, 56, 1)');
         createPolarAreaChart('topStudentsChart', 'Graphique des meilleurs étudiants', topStudentsData);
 
-        // Fonction pour créer un graphique
-        function createChart(canvasId, label, data, type, backgroundColor) {
+        // Fonction pour créer un graphique en ligne
+        function createLineChart(canvasId, label, data, backgroundColor, borderColor) {
             var ctx = document.getElementById(canvasId).getContext('2d');
             new Chart(ctx, {
-                type: type,
+                type: 'line',
                 data: {
                     labels: Object.keys(data),
                     datasets: [{
                         label: label,
                         data: Object.values(data),
-                        backgroundColor: backgroundColor
+                        backgroundColor: backgroundColor,
+                        borderColor: borderColor,
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
                     }]
                 },
                 options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
                     scales: {
-                        yAxes: [{
-                            ticks: {
-                                beginAtZero: true
-                            }
-                        }]
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'bottom'
+                        },
+                        tooltip: {
+                            enabled: true
+                        }
+                    },
+                    animation: {
+                        duration: 1000,
+                        easing: 'easeInOutQuad'
+                    }
+                }
+            });
+        }
+
+        // Fonction pour créer un diagramme en barres
+        function createBarChart(canvasId, label, data, backgroundColor, borderColor) {
+            var ctx = document.getElementById(canvasId).getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(data),
+                    datasets: [{
+                        label: label,
+                        data: Object.values(data),
+                        backgroundColor: backgroundColor,
+                        borderColor: borderColor,
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'bottom'
+                        },
+                        tooltip: {
+                            enabled: true
+                        }
+                    },
+                    animation: {
+                        duration: 1000,
+                        easing: 'easeInOutQuad'
                     }
                 }
             });
@@ -107,7 +165,7 @@
             const polarData = {
                 labels: names,
                 datasets: [{
-                    label: 'Scores des étudiants',
+                    label: label,
                     data: scores,
                     backgroundColor: [
                         '#FF6384',
@@ -120,18 +178,32 @@
             };
 
             const options = {
-                scale: {
-                    ticks: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
                         beginAtZero: true,
                         max: 20, // Score max
                         stepSize: 2 // Pas de 2 sur l'axe des y
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'bottom'
                     },
-                    reverse: false
+                    tooltip: {
+                        enabled: true
+                    }
+                },
+                animation: {
+                    duration: 1000,
+                    easing: 'easeInOutQuad'
                 }
             };
 
             var ctx = document.getElementById(canvasId).getContext('2d');
-            var myChart = new Chart(ctx, {
+            new Chart(ctx, {
                 type: 'polarArea',
                 data: polarData,
                 options: options

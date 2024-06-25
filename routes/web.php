@@ -14,6 +14,7 @@ use App\Http\Controllers\LessonController;
 use App\Http\Controllers\ClassroomController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\TestController;
+use App\Http\Controllers\WherebyController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\GroupController;
 use App\Http\Controllers\ZoomMeetingController;
@@ -22,6 +23,7 @@ use App\Http\Controllers\Admin\QuestionController;
 use App\Http\Controllers\Admin\VirtualClassController;
 use App\Http\Controllers\Admin\QuestionOptionController;
 use App\Http\Controllers\Admin\PedagogicalPathController;
+use App\Http\Controllers\MeetingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -126,13 +128,14 @@ Route::get('/course-requests', [CourseRequestController::class, 'index'])->name(
 Route::post('/course-requests/{id}', [CourseRequestController::class, 'update'])->name('course-requests.update');
 
 
-Route::middleware('auth')->group(function () {
-    Route::get('meetings/create', function () {
-        return view('meetings.create');
-    })->name('meetings.create');
-
-    Route::post('meetings', [ZoomController::class, 'createZoomMeeting'])->name('meetings.store');
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('meetings', [MeetingController::class, 'listMeetings'])->name('meetings.index');
+    Route::post('meetings', [MeetingController::class, 'createMeeting'])->name('meetings.create');
+    Route::delete('meetings/{id}', [MeetingController::class, 'deleteMeeting'])->name('meetings.delete');
+    Route::post('meetings/{id}/invite', [MeetingController::class, 'inviteMeeting'])->name('meetings.invite');
 });
+
+
 
 
 
