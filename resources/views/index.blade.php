@@ -33,7 +33,7 @@
               <a href="#course" class="btn btn-primary btn-lg">Discover Courses</a>
           </div>
           <div class="story-images">
-              <img src="{{ asset('frontend/assets/images/learning.png') }}" alt="Learning Image" class="story-img" />
+              <img src="{{ asset('frontend/assets/images/e-learning-online-training-education-banner.jpg') }}" alt="Learning Image" class="story-img" />
               <div class="story-square"></div>
           </div>
       </div>

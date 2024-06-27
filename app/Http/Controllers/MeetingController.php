@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Meeting;
 use App\Models\User;
-use App\Models\Group; // Assurez-vous d'importer le modèle Group
-use Illuminate\Support\Facades\Mail;
+use App\Models\Group;
+use App\Models\Meeting;
+use Chatify\Facades\Chatify;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Http;
-use Chatify\Facades\ChatifyMessenger as Chatify;
+use Illuminate\Support\Facades\Mail;
+use App\Notifications\MeetingInvitation;
 
 class MeetingController extends Controller
 {
@@ -42,9 +44,11 @@ class MeetingController extends Controller
     public function listMeetings()
     {
         $meetings = Meeting::all();
-        $users = User::all();
-        $groups = Group::all(); // Ajouter cette ligne pour récupérer les groupes
-        return view('admin.meetings.index', ['meetings' => $meetings, 'users' => $users, 'groups' => $groups]); // Passer les groupes à la vue
+        $students = User::whereHas('roles', function ($query) {
+            $query->where('title', 'student');
+        })->get();
+        $groups = Group::all();
+        return view('admin.meetings.index', ['meetings' => $meetings, 'students' => $students, 'groups' => $groups]);
     }
 
     public function deleteMeeting($id)
@@ -55,61 +59,29 @@ class MeetingController extends Controller
         return response()->json(['success' => 'Meeting deleted successfully']);
     }
 
-    public function inviteMeeting(Request $request, $id)
+    public function inviteStudents(Request $request, $meetingId)
     {
-        $meeting = Meeting::findOrFail($id);
-        $userIds = $request->input('userIds');
+        $meeting = Meeting::findOrFail($meetingId);
+        $students = User::whereIn('id', $request->student_ids)->get();
 
-        if (empty($userIds)) {
-            return response()->json(['error' => 'No users selected for invitation'], 400);
+        foreach ($students as $student) {
+            $student->notify(new MeetingInvitation($meeting));
         }
 
-        $users = User::whereIn('id', $userIds)->get();
-
-        foreach ($users as $user) {
-            // Send email invitation
-            Mail::raw("You are invited to a meeting: " . $meeting->roomUrl, function ($message) use ($user) {
-                $message->to($user->email)
-                        ->subject('Meeting Invitation');
-            });
-
-            // Send Chatify message
-            Chatify::sendMessage([
-                'from_id' => auth()->user()->id,
-                'to_id' => $user->id,
-                'body' => "You are invited to a meeting: " . $meeting->roomUrl,
-            ]);
-        }
-
-        return response()->json(['success' => 'Invitations sent successfully']);
+        return response()->json(['success' => 'Invitations sent successfully.']);
     }
 
-    public function addGroupToMeeting(Request $request, $id)
+    public function addGroupToMeeting(Request $request, $meetingId)
     {
-        $meeting = Meeting::findOrFail($id);
-        $groupId = $request->input('groupId');
+        $meeting = Meeting::findOrFail($meetingId);
+        $groups = Group::whereIn('id', $request->group_ids)->get();
 
-        if (!$groupId) {
-            return response()->json(['error' => 'Group ID is required'], 400);
+        foreach ($groups as $group) {
+            foreach ($group->students as $student) {
+                $student->notify(new MeetingInvitation($meeting));
+            }
         }
 
-        $group = Group::findOrFail($groupId);
-
-        foreach ($group->users as $user) {
-            // Send email invitation
-            Mail::raw("You are invited to a meeting: " . $meeting->roomUrl, function ($message) use ($user) {
-                $message->to($user->email)
-                        ->subject('Meeting Invitation');
-            });
-
-            // Send Chatify message
-            Chatify::sendMessage([
-                'from_id' => auth()->user()->id,
-                'to_id' => $user->id,
-                'body' => "You are invited to the meeting: " . $meeting->roomUrl,
-            ]);
-        }
-
-        return response()->json(['success' => 'Group invited successfully']);
+        return response()->json(['success' => 'Meeting added to groups successfully.']);
     }
 }

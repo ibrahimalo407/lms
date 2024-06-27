@@ -28,4 +28,9 @@ class PedagogicalPath extends Model
     {
         return Storage::url($this->presentation_video);
     }
+
+    public function students()
+    {
+        return $this->belongsToMany(User::class, 'path_student', 'path_id', 'student_id');
+    }
 }

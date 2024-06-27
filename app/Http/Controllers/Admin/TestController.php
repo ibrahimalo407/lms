@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Test;
+use App\Models\User;
 use App\Models\Course;
 use App\Models\Lesson;
 use Illuminate\Http\Request;
+use App\Notifications\TestCreated;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Gate;
 
@@ -18,13 +20,13 @@ class TestController extends Controller
      */
     public function index()
     {
-        if (! Gate::allows('test_access')) {
+        if (!Gate::allows('test_access')) {
             return abort(401);
         }
 
 
         if (request('show_deleted') == 1) {
-            if (! Gate::allows('test_delete')) {
+            if (!Gate::allows('test_delete')) {
                 return abort(401);
             }
             $tests = Test::onlyTrashed()->get();
@@ -42,7 +44,7 @@ class TestController extends Controller
      */
     public function create()
     {
-        if (! Gate::allows('test_create')) {
+        if (!Gate::allows('test_create')) {
             return abort(401);
         }
         $courses = Course::ofTeacher()->get();
@@ -61,10 +63,20 @@ class TestController extends Controller
      */
     public function store(Request $request)
     {
-        if (! Gate::allows('test_create')) {
+        if (!Gate::allows('test_create')) {
             return abort(401);
         }
-        Test::create($request->all());
+
+        $test = Test::create($request->all());
+
+        // Notify students about the new test
+        $students = User::whereHas('roles', function ($query) {
+            $query->where('title', 'Student');
+        })->get();
+
+        foreach ($students as $student) {
+            $student->notify(new TestCreated($test));
+        }
 
         return redirect()->route('admin.tests.index');
     }
@@ -88,7 +100,7 @@ class TestController extends Controller
      */
     public function edit(Test $test)
     {
-        if (! Gate::allows('test_edit')) {
+        if (!Gate::allows('test_edit')) {
             return abort(401);
         }
         $courses = Course::ofTeacher()->get();
@@ -106,9 +118,9 @@ class TestController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request,Test $test)
+    public function update(Request $request, Test $test)
     {
-        if (! Gate::allows('test_edit')) {
+        if (!Gate::allows('test_edit')) {
             return abort(401);
         }
         $test->update($request->all());
@@ -124,7 +136,7 @@ class TestController extends Controller
      */
     public function destroy(Test $test)
     {
-        if (! Gate::allows('test_delete')) {
+        if (!Gate::allows('test_delete')) {
             return abort(401);
         }
         $test->delete();
@@ -132,7 +144,7 @@ class TestController extends Controller
         return redirect()->route('admin.tests.index');
     }
 
-     /**
+    /**
      * Restore Test from storage.
      *
      * @param  int  $id
@@ -140,7 +152,7 @@ class TestController extends Controller
      */
     public function restore($id)
     {
-        if (! Gate::allows('test_delete')) {
+        if (!Gate::allows('test_delete')) {
             return abort(401);
         }
         $test = Test::onlyTrashed()->findOrFail($id);
@@ -157,7 +169,7 @@ class TestController extends Controller
      */
     public function perma_del($id)
     {
-        if (! Gate::allows('test_delete')) {
+        if (!Gate::allows('test_delete')) {
             return abort(401);
         }
         $test = Test::onlyTrashed()->findOrFail($id);

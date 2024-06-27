@@ -7,7 +7,7 @@
         <div class="detail-data-left lg:col-span-2 bg-white rounded-lg shadow-lg overflow-hidden">
             <h3 class="text-4xl font-bold mb-4">{{ $course->title }}</h3>
             <br>
-            <img src="{{ Storage::url($course->course_image) }}" alt="{{ $course->title }}" class="w-full h-64 object-cover"/>
+            <img src="{{ Storage::url($course->course_image) }}" alt="{{ $course->title }}" class="w-full h-64 object-cover" />
             <div class="p-6">
                 <div class="bg-gray-100 p-4 rounded-lg">
                     <p class="text-gray-700 leading-relaxed">{{ $course->description }}</p>
@@ -55,7 +55,7 @@
             @else
                 <a href="{{ route('register') }}?redirect_url={{ route('courses.show', [$course->slug]) }}"
                    class="button detail-button w-full text-center bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 mt-6">
-                    Buy course (${{ $course->price }})
+                    Acheter le cours (${{ $course->price }})
                 </a>
             @endif
         </div>

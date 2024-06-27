@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Course extends Model
 {
-    use HasFactory,SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'title',
@@ -42,11 +42,13 @@ class Course extends Model
         return $this->hasMany(CourseRequest::class);
     }
 
-    public function teachers(){
+    public function teachers()
+    {
         return $this->belongsToMany(User::class, 'course_user');
     }
 
-    public function getPublishedAttribute($attribute){
+    public function getPublishedAttribute($attribute)
+    {
         return [
             0 => 'Inactive',
             1 => 'Active'
@@ -56,7 +58,7 @@ class Course extends Model
     public function scopeOfTeacher($query)
     {
         if (!auth()->user()->isAdmin()) {
-            return $query->whereHas('teachers', function($q) {
+            return $query->whereHas('teachers', function ($q) {
                 $q->where('user_id', auth()->user()->id);
             });
         }
@@ -70,7 +72,7 @@ class Course extends Model
 
     public function students()
     {
-        return $this->belongsToMany(User::class, 'course_student')->withTimestamps()->withPivot(['rating']);;
+        return $this->belongsToMany(User::class, 'course_student', 'course_id', 'user_id');
     }
 
     public function lessons()
@@ -86,7 +88,4 @@ class Course extends Model
     {
         return $this->belongsToMany(User::class, 'course_user', 'course_id', 'user_id');
     }
-
-
 }
-

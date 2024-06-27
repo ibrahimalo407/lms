@@ -1,5 +1,30 @@
 <?php
 
+use Chatify\ChatifyMessenger;
+use Chatify\ChatifyServiceProvider;
+use Illuminate\Bus\BusServiceProvider;
+use Illuminate\Auth\AuthServiceProvider;
+use Illuminate\Mail\MailServiceProvider;
+use Morilog\Jalali\JalaliServiceProvider;
+use Illuminate\Cache\CacheServiceProvider;
+use Illuminate\Queue\QueueServiceProvider;
+use Illuminate\Redis\RedisServiceProvider;
+use App\Providers\BroadcastServiceProvider;
+use Illuminate\Hashing\HashServiceProvider;
+use Illuminate\Cookie\CookieServiceProvider;
+use Illuminate\Session\SessionServiceProvider;
+use Illuminate\Database\DatabaseServiceProvider;
+use Illuminate\Pipeline\PipelineServiceProvider;
+use Illuminate\Encryption\EncryptionServiceProvider;
+use Illuminate\Filesystem\FilesystemServiceProvider;
+use Illuminate\Pagination\PaginationServiceProvider;
+use Illuminate\Validation\ValidationServiceProvider;
+use Illuminate\Translation\TranslationServiceProvider;
+use Illuminate\Notifications\NotificationServiceProvider;
+use Illuminate\Auth\Passwords\PasswordResetServiceProvider;
+use Illuminate\Foundation\Providers\FoundationServiceProvider;
+use Illuminate\Foundation\Providers\ConsoleSupportServiceProvider;
+
 return [
 
     /*
@@ -187,6 +212,8 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\ZoomServiceProvider::class,
+        Mckenziearts\Notify\LaravelNotifyServiceProvider::class
+
          
 
     ],

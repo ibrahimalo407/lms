@@ -36,12 +36,10 @@
                                 <td>{{ $meeting->roomName }}</td>
                                 <td><a href="{{ $meeting->roomUrl }}" target="_blank">{{ $meeting->roomUrl }}</a></td>
                                 <td>
-                                    <div class="btn-group" role="group">
-                                        <button class="btn btn-primary btn-sm consult-meeting" data-url="${data.roomUrl}" target="_blank">Consult</button>
-                                        <button class="btn btn-danger btn-sm delete-meeting" data-id="${data.id}">Delete</button>
-                                        <button class="btn btn-info btn-sm invite-meeting" data-id="${data.id}">Invite</button>
-                                        <button class="btn btn-success btn-sm add-group-meeting" data-id="${data.id}">Add Group</button>
-                                    </div>
+                                    <a href="{{ $meeting->roomUrl }}"><button class="btn btn-sm btn-primary consult-meeting" data-url="{{ $meeting->roomUrl }}" target="_blank">Consult</button></a>
+                                    <button class="btn btn-sm btn-danger delete-meeting" data-id="{{ $meeting->id }}">Delete</button>
+                                    <button class="btn btn-sm btn-info invite-meeting" data-id="{{ $meeting->id }}">Invite</button>
+                                    <button class="btn btn-sm btn-success add-group-meeting" data-id="{{ $meeting->id }}">Add Group</button>
                                 </td>
                             </tr>
                         @empty
@@ -69,11 +67,15 @@
                         <input type="hidden" id="meeting-id" name="meeting_id">
                         <div class="mb-3">
                             <label for="userIds" class="form-label">Select Users</label>
-                            <select multiple class="form-control" id="userIds" name="userIds[]" required>
-                                @foreach ($users as $user)
-                                    <option value="{{ $user->id }}">{{ $user->name }} ({{ $user->email }})</option>
+                            <div class="form-check">
+                                @foreach ($students as $student)
+                                    <input class="form-check-input" type="checkbox" value="{{ $student->id }}" id="user{{ $student->id }}" name="userIds[]">
+                                    <label class="form-check-label" for="user{{ $student->id }}">
+                                        {{ $student->name }} ({{ $student->email }})
+                                    </label>
+                                    <br>
                                 @endforeach
-                            </select>
+                            </div>
                         </div>
                         <button type="submit" class="btn btn-primary">Send Invitations</button>
                     </form>
@@ -93,14 +95,18 @@
                 <div class="modal-body">
                     <form id="add-group-form">
                         @csrf
-                        <input type="hidden" id="meeting-id-group" name="meeting_id">
+                        <input type="hidden" id="meeting-id-group" name="meeting_id_group">
                         <div class="mb-3">
-                            <label for="groupId" class="form-label">Select Group</label>
-                            <select class="form-control" id="groupId" name="groupId" required>
+                            <label for="groupIds" class="form-label">Select Groups</label>
+                            <div class="form-check">
                                 @foreach ($groups as $group)
-                                    <option value="{{ $group->id }}">{{ $group->name }}</option>
+                                    <input class="form-check-input" type="checkbox" value="{{ $group->id }}" id="group{{ $group->id }}" name="groupIds[]">
+                                    <label class="form-check-label" for="group{{ $group->id }}">
+                                        {{ $group->name }}
+                                    </label>
+                                    <br>
                                 @endforeach
-                            </select>
+                            </div>
                         </div>
                         <button type="submit" class="btn btn-primary">Add Group</button>
                     </form>
@@ -111,47 +117,32 @@
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('create-meeting-form').addEventListener('submit', async function(event) {
+        event.preventDefault();
+
+        const roomName = document.getElementById('roomName').value;
         const token = document.querySelector('input[name="_token"]').value;
 
-        // Handle form submission for creating a meeting
-        document.getElementById('create-meeting-form').addEventListener('submit', async function(event) {
-            event.preventDefault();
+        try {
+            const response = await fetch('{{ route('admin.meetings.create') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': token
+                },
+                body: JSON.stringify({ roomName })
+            });
 
-            const roomName = document.getElementById('roomName').value;
-
-            try {
-                const response = await fetch('{{ route('admin.meetings.create') }}', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': token
-                    },
-                    body: JSON.stringify({ roomName })
-                });
-
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-
-                const data = await response.json();
-                displayMeetingResult(data);
-                addMeetingToList(data);
-
-            } catch (error) {
-                console.error('Error:', error);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
             }
-        });
 
-        // Display meeting result
-        function displayMeetingResult(data) {
+            const data = await response.json();
             document.getElementById('meeting-url').href = data.roomUrl;
             document.getElementById('meeting-url').innerText = data.roomUrl;
             document.getElementById('meeting-result').style.display = 'block';
-        }
 
-        // Add the new meeting to the meetings list
-        function addMeetingToList(data) {
+            // Add the new meeting to the meetings list
             const meetingsList = document.getElementById('meetings-list');
             const newRow = document.createElement('tr');
             newRow.innerHTML = `
@@ -165,22 +156,16 @@
                 </td>
             `;
             meetingsList.appendChild(newRow);
+
+        } catch (error) {
+            console.error('Error:', error);
         }
+    });
 
-        // Handle actions on meetings list
-        document.addEventListener('click', function(event) {
-            if (event.target.classList.contains('delete-meeting')) {
-                handleDeleteMeeting(event);
-            } else if (event.target.classList.contains('invite-meeting')) {
-                handleInviteMeeting(event);
-            } else if (event.target.classList.contains('add-group-meeting')) {
-                handleAddGroupMeeting(event);
-            }
-        });
-
-        // Handle deleting a meeting
-        function handleDeleteMeeting(event) {
+    document.addEventListener('click', function(event) {
+        if (event.target.classList.contains('delete-meeting')) {
             const meetingId = event.target.dataset.id;
+            const token = document.querySelector('input[name="_token"]').value;
 
             fetch(`{{ url('admin/meetings') }}/${meetingId}`, {
                 method: 'DELETE',
@@ -197,75 +182,69 @@
                 }
             })
             .catch(error => console.error('Error:', error));
-        }
-
-        // Handle inviting users to a meeting
-        function handleInviteMeeting(event) {
+        } else if (event.target.classList.contains('invite-meeting')) {
             const meetingId = event.target.dataset.id;
             document.getElementById('meeting-id').value = meetingId;
             new bootstrap.Modal(document.getElementById('inviteModal')).show();
-        }
-
-        // Handle adding group to a meeting
-        function handleAddGroupMeeting(event) {
+        } else if (event.target.classList.contains('add-group-meeting')) {
             const meetingId = event.target.dataset.id;
             document.getElementById('meeting-id-group').value = meetingId;
             new bootstrap.Modal(document.getElementById('addGroupModal')).show();
         }
+    });
 
-        // Handle form submission for inviting users
-        document.getElementById('invite-form').addEventListener('submit', function(event) {
-            event.preventDefault();
+    document.getElementById('invite-form').addEventListener('submit', function(event) {
+        event.preventDefault();
 
-            const meetingId = document.getElementById('meeting-id').value;
-            const userIds = Array.from(document.getElementById('userIds').selectedOptions).map(option => option.value);
+        const meetingId = document.getElementById('meeting-id').value;
+        const userIds = Array.from(document.querySelectorAll('input[name="userIds[]"]:checked')).map(input => input.value);
+        const token = document.querySelector('input[name="_token"]').value;
 
-            fetch(`{{ url('admin/meetings') }}/${meetingId}/invite`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': token
-                },
-                body: JSON.stringify({ userIds })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Invitations sent successfully');
-                    new bootstrap.Modal(document.getElementById('inviteModal')).hide();
-                } else {
-                    alert('Failed to send invitations');
-                }
-            })
-            .catch(error => console.error('Error:', error));
-        });
+        fetch(`{{ url('admin/meetings') }}/${meetingId}/invite`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': token
+            },
+            body: JSON.stringify({ userIds })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Invitations sent successfully');
+                new bootstrap.Modal(document.getElementById('inviteModal')).hide();
+            } else {
+                alert('Failed to send invitations');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
 
-        // Handle form submission for adding group
-        document.getElementById('add-group-form').addEventListener('submit', function(event) {
-            event.preventDefault();
+    document.getElementById('add-group-form').addEventListener('submit', function(event) {
+        event.preventDefault();
 
-            const meetingId = document.getElementById('meeting-id-group').value;
-            const groupId = document.getElementById('groupId').value;
+        const meetingId = document.getElementById('meeting-id-group').value;
+        const groupIds = Array.from(document.querySelectorAll('input[name="groupIds[]"]:checked')).map(input => input.value);
+        const token = document.querySelector('input[name="_token"]').value;
 
-            fetch(`{{ url('admin/meetings') }}/${meetingId}/add-group`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': token
-                },
-                body: JSON.stringify({ groupId })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Group added to meeting successfully');
-                    new bootstrap.Modal(document.getElementById('addGroupModal')).hide();
-                } else {
-                    alert('Failed to add group to meeting');
-                }
-            })
-            .catch(error => console.error('Error:', error));
-        });
+        fetch(`{{ url('admin/meetings') }}/${meetingId}/add-group`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': token
+            },
+            body: JSON.stringify({ groupIds })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Group added to meeting successfully');
+                new bootstrap.Modal(document.getElementById('addGroupModal')).hide();
+            } else {
+                alert('Failed to add group to meeting');
+            }
+        })
+        .catch(error => console.error('Error:', error));
     });
 </script>
 @endsection

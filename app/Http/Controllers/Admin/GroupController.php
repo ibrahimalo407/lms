@@ -8,6 +8,8 @@ use App\Models\Course;
 use Illuminate\Http\Request;
 use App\Models\PedagogicalPath;
 use App\Http\Controllers\Controller;
+use App\Notifications\StudentAddedToGroup;
+use App\Notifications\GroupAssignedToCourse;
 
 class GroupController extends Controller
 {
@@ -153,5 +155,46 @@ class GroupController extends Controller
     {
         $group->delete();
         return redirect()->route('admin.groups.index')->with('success', 'Group deleted successfully.');
+    }
+
+
+    public function addStudentToGroup(Request $request, $groupId)
+    {
+        $group = Group::findOrFail($groupId);
+        $student = User::findOrFail($request->student_id);
+
+        // Add student to group
+        $group->students()->attach($student);
+
+        // Add student to all courses and pedagogical paths of the group
+        $courses = Course::where('group_id', $group->id)->get();
+        $pedagogicalPaths = PedagogicalPath::where('group_id', $group->id)->get();
+
+        foreach ($courses as $course) {
+            $course->students()->attach($student);
+            }
+
+        foreach ($pedagogicalPaths as $path) {
+            $path->students()->attach($student);
+        }
+
+        // Notify student
+        $student->notify(new StudentAddedToGroup($group));
+
+        return redirect()->route('admin.groups.show', $groupId)->with('success', 'Student added to group and enrolled in all courses and pedagogical paths.');
+    }
+
+    public function assignGroupToCourse(Request $request, $groupId, $courseId)
+    {
+        $group = Group::findOrFail($groupId);
+        $course = Course::findOrFail($courseId);
+
+        $group->courses()->attach($course);
+
+        foreach ($group->users as $user) {
+            $user->notify(new GroupAssignedToCourse($course->name));
+        }
+
+        return response()->json(['success' => 'Group assigned to course and notified']);
     }
 }

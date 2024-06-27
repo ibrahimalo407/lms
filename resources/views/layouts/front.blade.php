@@ -8,11 +8,11 @@
     <link
       href="https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css"
       rel="stylesheet"
-    />
+      />
 
     {{-- <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"> --}}
 
-
+    
     <!-- swiper css -->
     <link rel="stylesheet" href="{{ asset('frontend/assets/libraries/swiper.css') }}" />
 
@@ -20,12 +20,16 @@
     <link rel="stylesheet" href="{{ asset('frontend/assets/style.css') }}" />
     <link rel="{{ asset('frontend/assets/images/G__5_-removebg-preview.png') }}"  href="favicon.ico" type="image/x-icon" style="width: 60px;height: 60px;">
     <title>OnlineTeach</title>
+    @notifyCss
   </head>
   <body>
+    <x-notify::notify />
+    @include('notify::components.notify')
+
     <header class="header" id="header">
       <div class="nav container">
         <a href="{{ route('home') }}" class="nav-logo">
-            <img src="{{ asset('frontend/assets/images/G__5_-removebg-preview.png') }}" alt="" width="200">
+            <img src="{{ asset('frontend/assets/images/G__5_-removebg-preview.png') }}" alt="" width="120">
         </a>
 
         <div class="nav-menu" id="nav-menu">
@@ -40,7 +44,10 @@
               <a href="{{ route('catalog') }}" class="nav-link">Course Catalog</a>
             </li>
             <li class="nav-item">
-              <a href="http://127.0.0.1:8000/chatify" class="nav-link">Mes Messages</a>
+              <a href="http://127.0.0.1:8000/chatify" class="nav-link">Discussions</a>
+            </li>
+            <li class="nav-item">
+              <a href="{{route('notifications.index')}}" class="nav-link">Notifications</a>
             </li>
             @auth
               @if(auth()->user()->isAdmin())
@@ -50,35 +57,35 @@
               @endif
             @endauth
           </ul>
-         @auth
-            <ul class="nav-list nav-account" style="margin-top: 1rem">
-                <li class="nav-item" style="width: 100%; text-align: center">
-                <a
+          @auth
+          <ul class="nav-list nav-account" style="margin-top: 1rem">
+            <li class="nav-item" style="width: 100%; text-align: center">
+              <a
                     href="{{ route('courses.index') }}"
                     class="button nav-link"
                     style="display: block; width: 100%"
                     >My Course</a
-                >
+                    >
                 </li>
                 <li class="nav-item" style="width: 100%; text-align: center">
                 <a
-                    href="#"
+                href="#"
                     class="button nav-link"
                     onclick="getElementById('logout').submit()"
                     style="display: block; width: 100%"
                     >Logout</a
                 >
                 <form id="logout" action="{{ route('logout') }}" method="post">
-                        @csrf
-                    </form>
+                  @csrf
+                </form>
                 </li>
             </ul>
          @endauth
-
+         
          @guest
          <ul class="nav-list nav-account" style="margin-top: 1rem">
                 <li class="nav-item" style="width: 100%; text-align: center">
-                <a
+                  <a
                     href="{{ route('login') }}"
                     class="button nav-link"
                     style="display: block; width: 100%"
@@ -87,9 +94,9 @@
                 </li>
                 <li class="nav-item" style="width: 100%; text-align: center">
                 <a
-                    href="{{ route('register') }}"
-                    class="button nav-link"
-                    style="display: block; width: 100%"
+                href="{{ route('register') }}"
+                class="button nav-link"
+                style="display: block; width: 100%"
                     >Register</a
                 >
                 </li>
@@ -115,14 +122,14 @@
             <i class="bx bx-chevron-down"></i>
           </div>
           @endauth
-
+          
           <div class="nav-toggle" id="nav-toggle">
             <i class="bx bx-grid-alt"></i>
           </div>
         </div>
       </div>
     </header>
-
+    
     <div class="dropdown" id="dropdown">
       <i class="bx bx-x dropdown-close" id="dropdown-close"></i>
 
@@ -204,5 +211,7 @@
     <script src="{{ asset('frontend/assets/libraries/swiper.js') }}"></script>
     <!--===== MAIN JS =====-->
     <script src="{{ asset('frontend/assets/main.js') }}"></script>
+
+    @notifyJs
   </body>
 </html>

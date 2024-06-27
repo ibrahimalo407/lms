@@ -11,19 +11,20 @@ use Laravel\Socialite\Facades\Socialite;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\LessonController;
+use App\Http\Controllers\MeetingController;
+use App\Http\Controllers\WherebyController;
 use App\Http\Controllers\ClassroomController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\TestController;
-use App\Http\Controllers\WherebyController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\GroupController;
 use App\Http\Controllers\ZoomMeetingController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\CourseRequestController;
 use App\Http\Controllers\Admin\QuestionController;
 use App\Http\Controllers\Admin\VirtualClassController;
 use App\Http\Controllers\Admin\QuestionOptionController;
 use App\Http\Controllers\Admin\PedagogicalPathController;
-use App\Http\Controllers\MeetingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -73,7 +74,7 @@ Route::group(['middleware' => ['isAdmin'], 'prefix' => 'admin', 'as' => 'admin.'
     Route::put('virtual_classes/{virtual_class}', [VirtualClassController::class, 'update'])->name('virtual_classes.update');
     Route::delete('virtual_classes/{virtual_class}', [VirtualClassController::class, 'destroy'])->name('virtual_classes.destroy');
 
-    
+
 
     Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -111,7 +112,7 @@ Route::middleware(['auth', 'permission:group_access'])->prefix('admin')->name('a
 
 
 
-Route::middleware(['auth', 'groupOrPathPermission:pedagogical_path_access'])->prefix('admin')->name('admin.')->group(function() {
+Route::middleware(['auth', 'groupOrPathPermission:pedagogical_path_access'])->prefix('admin')->name('admin.')->group(function () {
     Route::resource('groups', GroupController::class);
     Route::resource('pedagogical-paths', PedagogicalPathController::class);
 });
@@ -132,55 +133,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('meetings', [MeetingController::class, 'listMeetings'])->name('meetings.index');
     Route::post('meetings', [MeetingController::class, 'createMeeting'])->name('meetings.create');
     Route::delete('meetings/{id}', [MeetingController::class, 'deleteMeeting'])->name('meetings.delete');
-    Route::post('meetings/{id}/invite', [MeetingController::class, 'inviteMeeting'])->name('meetings.invite');
+    Route::post('/meetings/{meeting}/invite', [MeetingController::class, 'inviteStudents'])->name('meetings.invite');
+    Route::post('/meetings/{meeting}/add-group', [MeetingController::class, 'addGroupToMeeting'])->name('meetings.addGroup');
 });
 
-
-
-
-
-// Route::post('admin/virtual_classes/create-zoom-meeting', function (Illuminate\Http\Request $request) {
-//     $accessToken = session('zoom_access_token');
-
-//     if (!$accessToken) {
-//         return redirect()->route('login.zoom');
-//     }
-
-//     $client = new GuzzleHttp\Client();
-
-//     try {
-//         $response = $client->post('https://api.zoom.us/v2/users/me/meetings', [
-//             'headers' => [
-//                 'Authorization' => 'Bearer ' . $accessToken,
-//                 'Content-Type' => 'application/json',
-//             ],
-//             'json' => [
-//                 'topic' => $request->input('title'),
-//                 'type' => 2,  // Scheduled meeting
-//                 'start_time' => $request->input('start_time'),
-//                 'duration' => $request->input('duration'),  // Duration in minutes
-//                 'timezone' => 'UTC',
-//             ],
-//         ]);
-
-//         $data = json_decode($response->getBody(), true);
-
-//         // Créez une classe virtuelle avec les détails de la réunion
-//         App\Models\VirtualClass::create([
-//             'title' => $request->input('title'),
-//             'description' => $request->input('description'),
-//             'start_time' => $request->input('start_time'),
-//             'end_time' => $request->input('end_time'),
-//             'meeting_link' => $data['join_url'],
-//             'meeting_id' => $data['id'],
-//             'meeting_password' => $data['password'],
-//         ]);
-
-//         return redirect()->route('admin.virtual_classes.index')->with('success', 'Classe virtuelle créée avec succès!');
-//     } catch (\Exception $e) {
-//         return redirect()->route('admin.virtual_classes.index')->with('error', 'Erreur lors de la création de la réunion Zoom: ' . $e->getMessage());
-//     }
-// })->name('create-zoom-meeting');
 
 
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
@@ -191,3 +147,4 @@ Route::post('course/{course_id}/rating', [App\Http\Controllers\CourseController:
 
 Route::get('lessons/{course_id}/{slug}', [App\Http\Controllers\LessonController::class, 'show'])->name('lessons.show');
 Route::post('lesson/{slug}/test', [App\Http\Controllers\LessonController::class, 'test'])->name('lessons.test');
+Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');

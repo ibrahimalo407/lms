@@ -334,7 +334,7 @@ body.dark-theme {
 }
 
 .home-img-bg {
-    background-image: url("./images/learning_idea.png");
+    background-image: url("./images/e-learning.png");
     background-repeat: no-repeat;
     background-size: cover;
     background-position: -280px;
@@ -347,9 +347,9 @@ body.dark-theme {
     justify-content: center;
     justify-self: flex-end;
 
-    &:hover{
+    /* &:hover{
         transform: translateX(0.5rem);
-    }
+    } */
 }
 
 .home-title {
@@ -1216,7 +1216,7 @@ body.dark-theme {
 
     .nav-link {
         text-transform: initial;
-        font-size: var(--normal-font-size);
+        font-size: 1rem;
     }
 
     .nav-btns {
