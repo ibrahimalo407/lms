@@ -5,11 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Group;
 use App\Models\Meeting;
-use Chatify\Facades\Chatify;
+use App\Models\Invitation;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Mail;
 use App\Notifications\MeetingInvitation;
 
 class MeetingController extends Controller
@@ -43,12 +43,9 @@ class MeetingController extends Controller
 
     public function listMeetings()
     {
+        
         $meetings = Meeting::all();
-        $students = User::whereHas('roles', function ($query) {
-            $query->where('title', 'student');
-        })->get();
-        $groups = Group::all();
-        return view('admin.meetings.index', ['meetings' => $meetings, 'students' => $students, 'groups' => $groups]);
+        return view('admin.meetings.index', compact('meetings'));
     }
 
     public function deleteMeeting($id)
@@ -59,29 +56,94 @@ class MeetingController extends Controller
         return response()->json(['success' => 'Meeting deleted successfully']);
     }
 
+    public function showInviteForm($meetingId)
+    {
+        $meeting = Meeting::findOrFail($meetingId);
+        $students = User::whereHas('roles', function ($query) {
+            $query->where('title', 'student');
+        })->get();
+        return view('admin.meetings.invite', compact('meeting', 'students'));
+    }
+
     public function inviteStudents(Request $request, $meetingId)
     {
         $meeting = Meeting::findOrFail($meetingId);
         $students = User::whereIn('id', $request->student_ids)->get();
 
         foreach ($students as $student) {
-            $student->notify(new MeetingInvitation($meeting));
+            // Stocker l'invitation dans la base de données
+            Invitation::create([
+                'meeting_id' => $meeting->id,
+                'student_id' => $student->id,
+                'meeting_link' => $meeting->roomUrl,
+            ]);
         }
 
-        return response()->json(['success' => 'Invitations sent successfully.']);
+        // Redirection avec un message de succès
+        return redirect()->route('admin.meetings.index')
+            ->with('success', 'Invitations envoyées avec succès.');
     }
 
-    public function addGroupToMeeting(Request $request, $meetingId)
+
+
+
+
+    public function showAddGroupForm($meetingId)
     {
         $meeting = Meeting::findOrFail($meetingId);
-        $groups = Group::whereIn('id', $request->group_ids)->get();
+        $groups = Group::all();
+        return view('admin.meetings.add-group', compact('meeting', 'groups'));
+    }
+
+    // public function addGroupToMeeting(Request $request, $meetingId)
+    // {
+    //     $meeting = Meeting::findOrFail($meetingId);
+
+    //     // Validate request
+    //     $request->validate([
+    //         'group_ids' => 'required|array',
+    //         'group_ids.*' => 'exists:groups,id',
+    //     ]);
+
+    //     $groups = Group::whereIn('id', $request->group_ids)->get();
+
+    //     if ($groups->isEmpty()) {
+    //         return response()->json(['error' => 'No valid groups found'], 400);
+    //     }
+
+    //     foreach ($groups as $group) {
+    //         if ($group->students->isEmpty()) {
+    //             continue; // Skip groups with no students
+    //         }
+
+    //         foreach ($group->students as $student) {
+    //             $student->notify(new MeetingInvitation($meeting));
+    //         }
+    //     }
+
+    //     return response()->json(['success' => 'Meeting added to groups successfully.']);
+    // }
+
+    public function inviteGroups(Request $request, $meetingId)
+    {
+        $meeting = Meeting::findOrFail($meetingId);
+
+        // Retrieve the groups selected from the request
+        $groups = Group::whereIn('id', $request->group_ids)->with('students')->get();
 
         foreach ($groups as $group) {
             foreach ($group->students as $student) {
-                $student->notify(new MeetingInvitation($meeting));
+                // Store the invitation for each student in the group
+                Invitation::create([
+                    'meeting_id' => $meeting->id,
+                    'student_id' => $student->id,
+                    'meeting_link' => $meeting->roomUrl,
+                ]);
             }
         }
 
-        return response()->json(['success' => 'Meeting added to groups successfully.']);
+        $meetings = Meeting::all();
+
+        return redirect()->route('admin.meetings.index')->with('success', 'Invitations envoyées aux groupes avec succès !');
     }
 }

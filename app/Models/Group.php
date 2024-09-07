@@ -21,4 +21,9 @@ class Group extends Model
     {
         return $this->belongsToMany(PedagogicalPath::class, 'group_pedagogical_path');
     }
+
+    public function students()
+    {
+        return $this->belongsToMany(User::class, 'group_user', 'group_id', 'user_id');
+    }
 }

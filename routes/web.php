@@ -12,6 +12,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\LessonController;
 use App\Http\Controllers\MeetingController;
+use App\Http\Controllers\StudentController;
 use App\Http\Controllers\WherebyController;
 use App\Http\Controllers\ClassroomController;
 use App\Http\Controllers\DashboardController;
@@ -129,13 +130,25 @@ Route::get('/course-requests', [CourseRequestController::class, 'index'])->name(
 Route::post('/course-requests/{id}', [CourseRequestController::class, 'update'])->name('course-requests.update');
 
 
-Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('meetings', [MeetingController::class, 'listMeetings'])->name('meetings.index');
-    Route::post('meetings', [MeetingController::class, 'createMeeting'])->name('meetings.create');
-    Route::delete('meetings/{id}', [MeetingController::class, 'deleteMeeting'])->name('meetings.delete');
-    Route::post('/meetings/{meeting}/invite', [MeetingController::class, 'inviteStudents'])->name('meetings.invite');
-    Route::post('/meetings/{meeting}/add-group', [MeetingController::class, 'addGroupToMeeting'])->name('meetings.addGroup');
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/admin/meetings', [MeetingController::class, 'listMeetings'])->name('admin.meetings.index');
+    Route::post('/admin/meetings', [MeetingController::class, 'createMeeting'])->name('admin.meetings.store');
+    Route::delete('/admin/meetings/{id}', [MeetingController::class, 'deleteMeeting'])->name('admin.meetings.destroy');
+    Route::get('/admin/meetings/{meeting}/invite', [MeetingController::class, 'showInviteForm'])->name('admin.meetings.showInviteForm');
+    Route::post('/admin/meetings/{meeting}/invite', [MeetingController::class, 'inviteStudents'])->name('admin.meetings.invite');
+    Route::get('/admin/meetings/{meeting}/add-group', [MeetingController::class, 'showAddGroupForm'])->name('admin.meetings.showAddGroupForm');
+    Route::post('/admin/meetings/{meeting}/add-group', [MeetingController::class, 'inviteGroups'])->name('admin.meetings.inviteGroups');
+    Route::get('/student/invitations', [StudentController::class, 'index'])->name('student.invitations');
+    
 });
+
+Route::get('/invitations', [StudentController::class, 'index'])
+    ->middleware('auth') // uniquement vérifier l'authentification
+    ->name('student.invitations');
+
+
+
+
 
 
 

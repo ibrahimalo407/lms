@@ -28,7 +28,8 @@
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+
     <style>
         /* Styles pour la sidebar */
 .sidebar {
@@ -145,6 +146,7 @@
     <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
     <script src="//cdn.datatables.net/buttons/1.2.4/js/dataTables.buttons.min.js"></script>
     <script src="//cdn.datatables.net/buttons/1.2.4/js/buttons.flash.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script src="{{ asset('js/main.js') }}"></script>
     @stack('script-alt')
 </body>

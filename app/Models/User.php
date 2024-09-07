@@ -20,7 +20,11 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name', 'email', 'password', 'zoom_id', 'zoom_token',
+        'name',
+        'email',
+        'password',
+        'zoom_id',
+        'zoom_token',
     ];
 
     public function virtualClasses()
@@ -89,9 +93,19 @@ class User extends Authenticatable
         })->exists();
     }
 
-    public function groups()
+    // public function groups()
+    // {
+    //     return $this->belongsToMany(Group::class, 'group_user');
+    // }
+
+    public function invitations()
     {
-        return $this->belongsToMany(Group::class, 'group_user');
+        return $this->hasMany(Invitation::class, 'student_id');
     }
 
-}   
+
+    public function groups()
+    {
+        return $this->belongsToMany(Group::class, 'group_user', 'user_id', 'group_id');
+    }
+}

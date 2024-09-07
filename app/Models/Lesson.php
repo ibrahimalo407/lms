@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Notifications\Notifiable;
 
 class Lesson extends Model
 {
-    use HasFactory,SoftDeletes;
+    use HasFactory,SoftDeletes,Notifiable;
 
     protected $fillable = ['title', 'slug', 'embed_id', 'short_text', 'full_text', 'position','free_lesson', 'published', 'course_id'];
     

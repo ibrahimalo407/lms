@@ -9,8 +9,8 @@ class AdminMiddleware
 {
     public function handle($request, Closure $next)
     {
-        if (!Auth::check() || !Auth::user()->isAdmin()) {
-            return redirect('/home');
+        if (!auth()->user()->isAdmin()) {
+            return redirect('/'); // ou une autre route accessible aux utilisateurs normaux
         }
 
         return $next($request);

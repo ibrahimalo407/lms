@@ -33,7 +33,7 @@
             @endcan
             @can('group_access')
             <li class="nav-item">
-                <a href="{{ route('admin.meetings.create') }}" class="nav-link {{ request()->is('meetings/create') || request()->is('meetings/create/*') ? 'active' : '' }}">
+                <a href="{{ route('admin.meetings.store') }}" class="nav-link {{ request()->is('meetings/create') || request()->is('meetings/create/*') ? 'active' : '' }}">
                     <i class="nav-icon fas fa-video"></i>
                     Create Meeting
                 </a>

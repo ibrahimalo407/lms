@@ -4,7 +4,7 @@
 <div class="container mt-5">
     <h1 class="mb-4">Create a New Meeting</h1>
 
-    <form id="create-meeting-form">
+    <form id="create-meeting-form" >
         @csrf
         <div class="form-group">
             <label for="roomName">Room Name</label>
