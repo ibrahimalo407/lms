@@ -7,7 +7,6 @@
             <h1 class="mb-0">Inviter des Groupes</h1>
         </div>
         <div class="card-body">
-            <!-- Form to select groups and send invitations -->
             <form action="{{ route('admin.meetings.inviteGroups', $meeting->id) }}" method="POST">
                 @csrf
                 <div class="mb-3">

@@ -86,6 +86,11 @@ class User extends Authenticatable
         return $this->belongsToMany(Role::class);
     }
 
+    public function hasRole($roleTitle)
+    {
+        return $this->roles()->where('title', $roleTitle)->exists();
+    }
+
     public function hasPermission($permission)
     {
         return $this->roles()->whereHas('permissions', function ($query) use ($permission) {
@@ -107,5 +112,53 @@ class User extends Authenticatable
     public function groups()
     {
         return $this->belongsToMany(Group::class, 'group_user', 'user_id', 'group_id');
+    }
+
+    public function assignments()
+    {
+        return $this->belongsToMany(Assignment::class, 'student_assignments')
+            ->withPivot('status', 'grade', 'badge_points')
+            ->withTimestamps();
+    }
+
+    public function submissions()
+    {
+        return $this->hasMany(StudentSubmission::class, 'student_id');
+    }
+
+    public function badges()
+    {
+        return $this->belongsToMany(Badge::class)
+            ->withPivot('badge_points')
+            ->withTimestamps();
+    }
+
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class);
+    }
+
+    // app/Models/User.php
+
+    public function isStudent()
+    {
+        return $this->roles()->where('title', 'student')->exists();
+    }
+
+
+    public function studentAssignments()
+    {
+        return $this->hasMany(StudentAssignment::class, 'student_id');
+    }
+
+
+    // public function isAdmin()
+    // {
+    //     return $this->role === 'admin';
+    // }
+
+    public function isTeacher()
+    {
+        return $this->role === 'teacher';
     }
 }

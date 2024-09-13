@@ -9,6 +9,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ZoomController;
 use Laravel\Socialite\Facades\Socialite;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\GradeController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\LessonController;
 use App\Http\Controllers\MeetingController;
@@ -18,11 +19,13 @@ use App\Http\Controllers\ClassroomController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\TestController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\Admin\GroupController;
 use App\Http\Controllers\ZoomMeetingController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\CourseRequestController;
 use App\Http\Controllers\Admin\QuestionController;
+use App\Http\Controllers\StudentAssignmentController;
 use App\Http\Controllers\Admin\VirtualClassController;
 use App\Http\Controllers\Admin\QuestionOptionController;
 use App\Http\Controllers\Admin\PedagogicalPathController;
@@ -81,7 +84,6 @@ Route::group(['middleware' => ['isAdmin'], 'prefix' => 'admin', 'as' => 'admin.'
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 });
 
-// use App\Http\Controllers\AdminController;
 
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/course-requests', [AdminController::class, 'courseRequests'])->name('admin.course-requests');
@@ -91,17 +93,6 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
 
 
-// Route::get('login/zoom', [ZoomController::class, 'redirectToProvider'])->name('login.zoom');
-// Route::get('zoom/callback', [ZoomController::class, 'handleProviderCallback']);
-// Route::post('zoom/meeting/create', [ZoomController::class, 'createZoomMeeting'])->name('zoom.meeting.create');
-
-// Route::middleware(['auth', 'permission:group_access'])->prefix('admin')->name('admin.')->group(function () {
-//     Route::resource('groups', GroupController::class);
-//     // Route::post('groups/{group}/addStudent', [GroupController::class, 'addStudent'])->name('groups.addStudent');
-//     Route::put('groups/{group}/updateRestriction/{user}', 'GroupController@updateRestriction')->name('groups.updateRestriction');
-//     Route::delete('groups/{group}/removeUser/{user}', 'GroupController@removeUser')->name('groups.removeUser');
-//     Route::get('restricted-students', 'GroupController@restrictedStudents')->name('groups.restrictedStudents');
-// });
 
 Route::middleware(['auth', 'permission:group_access'])->prefix('admin')->name('admin.')->group(function () {
     Route::resource('groups', GroupController::class);
@@ -139,13 +130,54 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/meetings/{meeting}/add-group', [MeetingController::class, 'showAddGroupForm'])->name('admin.meetings.showAddGroupForm');
     Route::post('/admin/meetings/{meeting}/add-group', [MeetingController::class, 'inviteGroups'])->name('admin.meetings.inviteGroups');
     Route::get('/student/invitations', [StudentController::class, 'index'])->name('student.invitations');
-    
 });
 
 Route::get('/invitations', [StudentController::class, 'index'])
     ->middleware('auth') // uniquement vérifier l'authentification
     ->name('student.invitations');
 
+
+
+Route::middleware(['auth'])->group(function () {
+    // Routes pour les devoirs et évaluations
+    Route::get('/assignments', [AssignmentController::class, 'index'])->name('assignments.index');
+    Route::get('/assignments/create', [AssignmentController::class, 'create'])
+        ->name('assignments.create')
+        ->middleware('can:create,App\Models\Assignment');
+    Route::post('/assignments/store', [AssignmentController::class, 'store'])->name('assignments.store');
+    Route::get('/assignments/{assignment}/edit', [AssignmentController::class, 'edit'])->name('assignments.edit');
+    Route::put('/assignments/{assignment}', [AssignmentController::class, 'update'])->name('assignments.update');
+    Route::get('/assignments/{assignment}/show', [AssignmentController::class, 'show'])->name('assignments.show');
+
+    // Route pour soumettre une assignation (pour les étudiants)
+    Route::post('/assignments/{id}/submit', [AssignmentController::class, 'submit'])->name('assignments.submit');
+
+    // Routes pour noter et attribuer des badges
+    Route::post('/assignments/{id}/grade', [AssignmentController::class, 'grade'])->name('assignments.grade');
+    Route::get('/assignments/{assignment}/grade', [AssignmentController::class, 'grade'])->name('assignments.grade');
+
+    Route::post('/assignments/{assignment}/grade', [AssignmentController::class, 'storeGrade'])->name('assignments.storeGrade');
+    // In `routes/web.php`
+    Route::get('/assignments/{assignment}/submit', [AssignmentController::class, 'submissionPage'])->name('assignments.submit');
+    Route::post('/assignments/{assignment}/submit', [AssignmentController::class, 'submit'])->name('assignments.submit.store');
+    // In `routes/web.php`
+    Route::get('/assignments/{assignment}/submissions', [AssignmentController::class, 'viewSubmissions'])->name('assignments.submissions');
+    Route::post('/assignments/{assignment}/submissions/{studentAssignment}/grade', [AssignmentController::class, 'grade'])->name('assignments.grade');
+
+    // Route::get('/student/assignments', [AssignmentController::class, 'index'])->name('student.assignments.index');
+
+    Route::get('/student/assignments', [StudentAssignmentController::class, 'index'])->name('student.assignments');
+    Route::post('/student/assignments/{id}/submit', [StudentAssignmentController::class, 'submit'])->name('student.assignments.submit');
+    Route::get('/student/assignments/{id}', [StudentAssignmentController::class, 'show'])->name('student.assignments.show');
+    Route::get('assignments/{assignment_id}/submissions', [AssignmentController::class, 'submissions'])->name('assignments.submissions');
+    Route::get('assignments/{assignment_id}/submissions/{student_id}', [AssignmentController::class, 'submissionDetail'])->name('assignments.submission_detail');
+    Route::post('assignments/{assignment_id}/submissions/{student_id}/grade', [AssignmentController::class, 'submitGrade'])->name('assignments.submit_grade');
+
+    Route::delete('/assignments/{id}', [AssignmentController::class, 'destroy'])->name('assignments.destroy');
+
+    // Affichage des notes
+    Route::get('/student/grades', [GradeController::class, 'index'])->name('student.grades');
+});
 
 
 

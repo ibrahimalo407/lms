@@ -1,22 +1,18 @@
 @extends('layouts.front')
 
-
 <br>
 <br>
 <br>
 <br>
 <br>
-
 @section('content')
 <div class="container-fluid mt-5">
     <!-- Section d'introduction -->
     <div class="text-center mb-5">
         <h1 class="display-4 text-primary">Mes Invitations</h1>
-        <br>
         <p class="lead text-muted">Voici la liste des invitations à vos réunions. Cliquez sur le lien pour accéder à la réunion.</p>
     </div>
 
-    <br>
     <!-- Affichage si aucune invitation n'est présente -->
     @if($invitations->isEmpty())
         <div class="alert alert-info text-center">
@@ -24,13 +20,13 @@
         </div>
     @else
         <!-- Tableau des invitations stylisé occupant toute la largeur -->
-        <div class="table-responsive">
-            <table class="table table-hover custom-table shadow-lg w-100">
+        <div class="table-responsive shadow-lg">
+            <table class="table table-hover custom-table">
                 <thead>
                     <tr class="table-primary">
                         <th>Réunion</th>
                         <th>Lien</th>
-                        <th>Statut</th>
+                        <th class="text-center">Statut</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -70,8 +66,9 @@
 <!-- Styles personnalisés pour le tableau -->
 <style>
     .custom-table {
-        border-collapse: collapse;
         width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 10px;
     }
 
     .custom-table thead th {
@@ -79,18 +76,19 @@
         color: white;
         text-align: center;
         padding: 15px;
+        border-radius: 10px 10px 0 0;
     }
 
     .custom-table tbody td {
         padding: 20px;
         vertical-align: middle;
-        border: 1px solid #dee2e6;
-        background-color: #f9f9f9;
+        background-color: #fff;
+        border-bottom: 1px solid #e9ecef;
     }
 
     .custom-table tbody tr:hover td {
         background-color: #f1f1f1;
-        transition: all 0.2s ease;
+        transition: background-color 0.3s ease;
     }
 
     .custom-link {
@@ -112,10 +110,15 @@
     .badge-success {
         background-color: #28a745;
         color: white;
+        padding: 5px
     }
 
     .table-responsive {
-        overflow-x: auto;
+        padding: 20px;
     }
 
+    /* Styles for table */
+    .custom-table thead {
+        border-radius: 10px;
+    }
 </style>

@@ -2,7 +2,7 @@
     <nav class="sidebar-nav">
         <ul class="nav">
             <li class="nav-item">
-                <a href="{{ route('admin.dashboard') }}" class="nav-link {{ request()->is('admin.dashboard') ? 'active' : '' }}">
+                <a href="{{ route('admin.dashboard') }}" class="nav-link {{ request()->is('admin.dashbord') ? 'active' : '' }}">
                     <i class="nav-icon fas fa-tachometer-alt"></i>
                     Dashboard
                 </a>
@@ -27,7 +27,7 @@
             <li class="nav-item" class="{{ request()->is('admin/pedagogical-paths*') ? 'active' : '' }}">
                 <a href="{{ route('admin.pedagogical-paths.index') }}" class="nav-link">
                     <i class="fa fa-book"></i>
-                    <span>Pedagogical Paths</span>
+                    Pedagogical Paths
                 </a>
             </li>            
             @endcan
@@ -49,6 +49,14 @@
                 <a href="{{ route('admin.courses.index') }}" class="nav-link {{ request()->is('admin/courses') || request()->is('admin/courses/*') ? 'active' : '' }}">
                     <i class="nav-icon fas fa-gift"></i>
                     Courses
+                </a>
+            </li>
+            @endcan
+            @can('course_access')
+            <li class="nav-item">
+                <a href="{{ route('assignments.index') }}" class="nav-link {{ request()->is('assignments') || request()->is('assignments/*') ? 'active' : '' }}">
+                    <i class="nav-icon fas fa-gift"></i>
+                    Devoirs / Evalueations
                 </a>
             </li>
             @endcan

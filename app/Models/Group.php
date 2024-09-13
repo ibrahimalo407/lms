@@ -26,4 +26,11 @@ class Group extends Model
     {
         return $this->belongsToMany(User::class, 'group_user', 'group_id', 'user_id');
     }
+
+    public function assignments()
+    {
+        return $this->belongsToMany(Assignment::class, 'student_assignments')
+            ->withPivot('status', 'grade', 'badge_points')
+            ->withTimestamps();
+    }
 }

@@ -13,16 +13,43 @@ class StudentController extends Controller
 
     public function index()
     {
+        // Récupérer les invitations de l'utilisateur connecté
         $invitations = auth()->user()->invitations;
-
-        // Marquer les invitations comme vues
-        foreach ($invitations as $invitation) {
-            $invitation->seen = true; // Marquer comme vue
-            $invitation->save(); // Enregistrer la modification
-        }
 
         return view('students.invitations', compact('invitations'));
     }
+
+    public function showAssignments()
+    {
+        $student = auth()->user(); // Assurez-vous que l'utilisateur est authentifié
+        $assignments = $student->assignments()
+            ->wherePivot('status', '!=', 'completed')
+            ->get();
+
+        return view('student.assignments.index', compact('assignments'));
+    }
+
+    public function showAssignment($assignmentId)
+    {
+        $student = auth()->user(); // Assurez-vous que l'utilisateur est authentifié
+        $assignment = $student->assignments()->findOrFail($assignmentId);
+
+        return view('student.assignments.show', compact('assignment'));
+    }
+
+    public function markAsSeen($id)
+    {
+        // Trouver l'invitation en fonction de l'ID
+        $invitation = auth()->user()->invitations()->findOrFail($id);
+
+        // Marquer l'invitation comme vue
+        $invitation->seen = true;
+        $invitation->save();
+
+        // Rediriger vers le lien de la réunion
+        return redirect($invitation->meeting_link);
+    }
+
 
 
 

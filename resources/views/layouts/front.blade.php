@@ -56,6 +56,13 @@
                             <li class="nav-item">
                                 <a href="{{ route('admin.courses.index') }}" class="nav-link">Admin</a>
                             </li>
+                        @elseif (auth()->user()->isStudent())
+                            <li class="nav-item">
+                                <a href="{{ route('student.assignments') }}" class="nav-link">Mes Devoirs</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('student.grades') }}" class="nav-link">Mes Notes</a>
+                            </li>
                         @endif
                     @endauth
                 </ul>
