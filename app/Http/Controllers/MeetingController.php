@@ -84,45 +84,12 @@ class MeetingController extends Controller
             ->with('success', 'Invitations envoyées avec succès.');
     }
 
-
-
-
-
     public function showAddGroupForm($meetingId)
     {
         $meeting = Meeting::findOrFail($meetingId);
         $groups = Group::all();
         return view('admin.meetings.add-group', compact('meeting', 'groups'));
     }
-
-    // public function addGroupToMeeting(Request $request, $meetingId)
-    // {
-    //     $meeting = Meeting::findOrFail($meetingId);
-
-    //     // Validate request
-    //     $request->validate([
-    //         'group_ids' => 'required|array',
-    //         'group_ids.*' => 'exists:groups,id',
-    //     ]);
-
-    //     $groups = Group::whereIn('id', $request->group_ids)->get();
-
-    //     if ($groups->isEmpty()) {
-    //         return response()->json(['error' => 'No valid groups found'], 400);
-    //     }
-
-    //     foreach ($groups as $group) {
-    //         if ($group->students->isEmpty()) {
-    //             continue; // Skip groups with no students
-    //         }
-
-    //         foreach ($group->students as $student) {
-    //             $student->notify(new MeetingInvitation($meeting));
-    //         }
-    //     }
-
-    //     return response()->json(['success' => 'Meeting added to groups successfully.']);
-    // }
 
     public function inviteGroups(Request $request, $meetingId)
     {

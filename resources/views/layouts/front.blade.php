@@ -10,6 +10,7 @@
 
     {{-- <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"> --}}
 
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 
     <!-- swiper css -->
     <link rel="stylesheet" href="{{ asset('frontend/assets/libraries/swiper.css') }}" />
@@ -29,39 +30,54 @@
     <header class="header" id="header">
         <div class="nav container">
             <a href="{{ route('home') }}" class="nav-logo">
-                <img src="{{ asset('frontend/assets/images/G__5_-removebg-preview.png') }}" alt=""
-                    width="120">
+                <img src="{{ asset('frontend/assets/images/G__5_-removebg-preview.png') }}" alt="" width="120">
             </a>
-
+    
             <div class="nav-menu" id="nav-menu">
                 <ul class="nav-list">
                     <li class="nav-item">
-                        <a href="{{ route('home') }}" class="nav-link">Home</a>
+                        <a href="{{ route('home') }}" class="nav-link">
+                            <i class="bx bx-home"></i> Home
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('courses.index') }}" class="nav-link">Course</a>
+                        <a href="{{ route('courses.index') }}" class="nav-link">
+                            <i class="bx bx-book"></i> Course
+                        </a>
+                    </li>
+                    {{-- <li class="nav-item">
+                        <a href="{{ route('catalog') }}" class="nav-link">
+                            <i class="bx bx-list-ul"></i> Catalog
+                        </a>
+                    </li> --}}
+                    <li class="nav-item">
+                        <a href="http://127.0.0.1:8000/chatify" class="nav-link">
+                            <i class="bx bx-chat"></i> Discussions
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('catalog') }}" class="nav-link">Course Catalog</a>
+                        <a href="{{ route('student.invitations') }}" class="nav-link">
+                            <i class="bx bx-file-blank"></i> Formations
+                        </a>
                     </li>
-                    <li class="nav-item">
-                        <a href="http://127.0.0.1:8000/chatify" class="nav-link">Discussions</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('student.invitations') }}" class="nav-link">Formations</a>
-                    </li>
-
+    
                     @auth
                         @if (auth()->user()->isAdmin())
                             <li class="nav-item">
-                                <a href="{{ route('admin.courses.index') }}" class="nav-link">Admin</a>
+                                <a href="{{ route('admin.courses.index') }}" class="nav-link">
+                                    <i class="bx bx-cog"></i> Admin
+                                </a>
                             </li>
                         @elseif (auth()->user()->isStudent())
                             <li class="nav-item">
-                                <a href="{{ route('student.assignments') }}" class="nav-link">Mes Devoirs</a>
+                                <a href="{{ route('student.assignments') }}" class="nav-link">
+                                    <i class="bx bx-task"></i> Mes Devoirs
+                                </a>
                             </li>
                             <li class="nav-item">
-                                <a href="{{ route('student.grades') }}" class="nav-link">Mes Notes</a>
+                                <a href="{{ route('student.grades') }}" class="nav-link">
+                                    <i class="bx bx-star"></i> Mes Notes
+                                </a>
                             </li>
                         @endif
                     @endauth
@@ -69,37 +85,41 @@
                 @auth
                     <ul class="nav-list nav-account" style="margin-top: 1rem">
                         <li class="nav-item" style="width: 100%; text-align: center">
-                            <a href="{{ route('courses.index') }}" class="button nav-link"
-                                style="display: block; width: 100%">My Course</a>
+                            <a href="{{ route('courses.index') }}" class="button nav-link" style="display: block; width: 100%">
+                                <i class="bx bx-book-open"></i> My Course
+                            </a>
                         </li>
                         <li class="nav-item" style="width: 100%; text-align: center">
-                            <a href="#" class="button nav-link" onclick="getElementById('logout').submit()"
-                                style="display: block; width: 100%">Logout</a>
+                            <a href="#" class="button nav-link" onclick="getElementById('logout').submit()" style="display: block; width: 100%">
+                                <i class="bx bx-log-out"></i> Logout
+                            </a>
                             <form id="logout" action="{{ route('logout') }}" method="post">
                                 @csrf
                             </form>
                         </li>
                     </ul>
                 @endauth
-
+    
                 @guest
                     <ul class="nav-list nav-account" style="margin-top: 1rem">
                         <li class="nav-item" style="width: 100%; text-align: center">
-                            <a href="{{ route('login') }}" class="button nav-link"
-                                style="display: block; width: 100%">Login</a>
+                            <a href="{{ route('login') }}" class="button nav-link" style="display: block; width: 100%">
+                                <i class="bx bx-log-in"></i> Login
+                            </a>
                         </li>
                         <li class="nav-item" style="width: 100%; text-align: center">
-                            <a href="{{ route('register') }}" class="button nav-link"
-                                style="display: block; width: 100%">Register</a>
+                            <a href="{{ route('register') }}" class="button nav-link" style="display: block; width: 100%">
+                                <i class="bx bx-user-plus"></i> Register
+                            </a>
                         </li>
                     </ul>
                 @endguest
-
+    
                 <div class="nav-close" id="nav-close">
                     <i class="bx bx-x"></i>
                 </div>
             </div>
-
+    
             <div class="nav-btns">
                 <i class="bx bx-moon change-theme" id="theme-button"></i>
                 @guest
@@ -114,13 +134,14 @@
                         <i class="bx bx-chevron-down"></i>
                     </div>
                 @endauth
-
+    
                 <div class="nav-toggle" id="nav-toggle">
                     <i class="bx bx-grid-alt"></i>
                 </div>
             </div>
         </div>
     </header>
+    
 
     <div class="dropdown" id="dropdown">
         <i class="bx bx-x dropdown-close" id="dropdown-close"></i>
@@ -208,6 +229,7 @@
     <!--===== MAIN JS =====-->
     <script src="{{ asset('frontend/assets/main.js') }}"></script>
 
+    
     @notifyJs
 </body>
 

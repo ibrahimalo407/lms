@@ -1,5 +1,4 @@
 @extends('layouts.front')
-
 <br>
 <br>
 <br>
@@ -65,6 +64,12 @@
 
 <!-- Styles personnalisés pour le tableau -->
 <style>
+    body {
+        font-family: 'Poppins', sans-serif; /* Ensure consistent font */
+        background-color: #121212; /* Dark background for the page */
+        color: #ffffff; /* Default text color */
+    }
+
     .custom-table {
         width: 100%;
         border-collapse: separate;
@@ -72,7 +77,7 @@
     }
 
     .custom-table thead th {
-        background-color: #007bff;
+        background-color: #007bff; /* Bootstrap primary color */
         color: white;
         text-align: center;
         padding: 15px;
@@ -82,43 +87,46 @@
     .custom-table tbody td {
         padding: 20px;
         vertical-align: middle;
-        background-color: #fff;
-        border-bottom: 1px solid #e9ecef;
+        background-color: #ffffff; /* White background for rows */
+        border-bottom: 1px solid #e9ecef; /* Light border */
+        border-radius: 8px; /* Rounded corners */
     }
 
     .custom-table tbody tr:hover td {
-        background-color: #f1f1f1;
+        background-color: #f1f1f1; /* Light gray on hover */
         transition: background-color 0.3s ease;
     }
 
     .custom-link {
-        color: #007bff;
+        color: #007bff; /* Bootstrap primary color */
         font-weight: bold;
         text-decoration: none;
     }
 
     .custom-link:hover {
-        color: #0056b3;
+        color: #0056b3; /* Darker blue on hover */
         text-decoration: underline;
     }
 
     .badge-warning {
-        background-color: #ffc107;
+        background-color: #ffc107; /* Bootstrap warning color */
         color: white;
     }
 
     .badge-success {
-        background-color: #28a745;
+        background-color: #28a745; /* Bootstrap success color */
         color: white;
-        padding: 5px
+        padding: 5px 10px; /* Added padding for better visibility */
+        border-radius: 5px; /* Rounded corners */
     }
 
     .table-responsive {
         padding: 20px;
     }
 
-    /* Styles for table */
-    .custom-table thead {
-        border-radius: 10px;
+    /* Additional styling for the alert */
+    .alert {
+        border-radius: 10px; /* Rounded corners for alerts */
+        margin-top: 20px; /* Spacing above the alert */
     }
 </style>

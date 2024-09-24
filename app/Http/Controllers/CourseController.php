@@ -36,26 +36,27 @@ class CourseController extends Controller
         $course = Course::where('slug', $course_slug)
             ->with('publishedLessons')
             ->firstOrFail();
-
+    
         $user = auth()->user();
-
+    
         // Vérifiez si l'utilisateur est restreint dans l'un des groupes associés au cours
-        $isRestricted = $user->groups()
+        $isRestricted = $user ? $user->groups()
             ->whereHas('pedagogicalPaths.courses', function ($query) use ($course) {
                 $query->where('courses.id', $course->id);
             })
             ->wherePivot('is_restricted', true)
-            ->exists();
-
+            ->exists() : false;
+    
+        // Si l'accès est restreint, renvoyez à la vue avec la variable d'accès restreint
         if ($isRestricted) {
-            return redirect()->route('courses.index')
-                ->with('error', 'Votre accès est restreint, veuillez envoyer un message à l\'admin dans votre espace de chat.');
+            return view('course', compact('course', 'isRestricted'));
         }
-
+    
         $purchased_course = $user && $course->students()->where('user_id', $user->id)->exists();
-
+    
         return view('course', compact('course', 'purchased_course'));
     }
+    
 
 
 

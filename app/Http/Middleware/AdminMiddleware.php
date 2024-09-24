@@ -1,5 +1,6 @@
 <?php
 
+// Dans AdminMiddleware.php
 namespace App\Http\Middleware;
 
 use Closure;
@@ -9,7 +10,7 @@ class AdminMiddleware
 {
     public function handle($request, Closure $next)
     {
-        if (!Auth::check() || !Auth::user()->isAdmin()) {
+        if (!Auth::check() || (!Auth::user()->isAdmin() && !Auth::user()->isTeacher())) {
             return redirect('/');
         }
 

@@ -25,6 +25,7 @@
                         <tr>
                             <th>User</th>
                             <th>Course</th>
+                            <th>Status</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -33,6 +34,7 @@
                             <tr>
                                 <td>{{ $request->user->name }}</td>
                                 <td>{{ $request->course->title }}</td>
+                                <td>{{ $request->status }}</td>
                                 <td>
                                     <form action="{{ route('admin.course-requests.approve', $request->id) }}" method="POST" style="display:inline-block;">
                                         @csrf

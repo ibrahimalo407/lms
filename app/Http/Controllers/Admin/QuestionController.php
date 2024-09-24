@@ -35,11 +35,6 @@ class QuestionController extends Controller
         return view('admin.questions.index', compact('questions'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         if (! Gate::allows('question_create')) {
@@ -111,14 +106,7 @@ class QuestionController extends Controller
 
         return view('admin.questions.edit', compact('question', 'tests'));
     }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    
     public function update(Request $request,Question $question)
     {
         if (! Gate::allows('question_edit')) {
@@ -140,12 +128,6 @@ class QuestionController extends Controller
         return redirect()->route('admin.questions.index');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Question $question)
     {
         if (! Gate::allows('question_delete')) {
@@ -155,13 +137,6 @@ class QuestionController extends Controller
 
         return redirect()->route('admin.questions.index');
     }
-
-     /**
-     * Restore Question from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function restore($id)
     {
         if (! Gate::allows('question_delete')) {
@@ -172,13 +147,6 @@ class QuestionController extends Controller
 
         return redirect()->route('admin.questions.index');
     }
-
-      /**
-     * Permanently delete Question from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function perma_del($id)
     {
         if (! Gate::allows('question_delete')) {
