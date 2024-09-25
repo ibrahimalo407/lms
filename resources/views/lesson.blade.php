@@ -73,16 +73,19 @@
         @if ($purchased_course && $test_exists)
             @if (!is_null($test_result))
                 <div class="alert alert-info">Your test score: {{ $test_result->test_result }}</div>
+            
             @else
                 <form action="{{ route('lessons.test', [$lesson->slug]) }}" method="post">
                     @csrf
                     @foreach ($lesson->test->questions as $question)
                         <h3>{{ $loop->iteration }}. {{ $question->question }}</h3>
-                        @foreach ($question->options as $option)
-                            <label>
-                                <input type="radio" name="questions[{{ $question->id }}]" value="{{ $option->id }}" /> {{ $option->option_text }}
-                            </label>
-                        @endforeach
+                        <div class="options-container">
+                            @foreach ($question->options as $option)
+                                <label class="option-label">
+                                    <input type="radio" name="questions[{{ $question->id }}]" value="{{ $option->id }}" /> {{ $option->option_text }}
+                                </label>
+                            @endforeach
+                        </div>
                     @endforeach
                     <button class="button submit-button">Submit Result</button>
                 </form>
@@ -90,6 +93,7 @@
         @endif
     </div>
 </section>
+
 
 @if ($purchased_course)
 <!-- Rating Section -->
@@ -146,6 +150,15 @@ body {
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
 }
 
+.alert-danger {
+    margin-top: 1rem;
+    padding: 1rem;
+    background-color: #fee2e2; /* Light red */
+    border: 1px solid #f87171; /* Red-600 */
+    border-radius: 0.5rem;
+    color: #b91c1c; /* Dark red text */
+}
+
 .video-container iframe {
     position: absolute;
     top: 0;
@@ -160,19 +173,6 @@ body {
     display: flex;
     justify-content: space-between;
     margin-top: 1rem;
-}
-
-.swiper-button-prev, .swiper-button-next {
-    background-color: rgba(255, 255, 255, 0.9);
-    border-radius: 50%;
-    padding: 0.75rem;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
-    transition: background-color 0.3s, transform 0.3s;
-}
-
-.swiper-button-prev:hover, .swiper-button-next:hover {
-    background-color: rgba(255, 255, 255, 1);
-    transform: scale(1.1);
 }
 
 .lesson-list {
@@ -261,33 +261,16 @@ body {
     align-items: center;
 }
 
-#close-alert {
-    cursor: pointer;
-    margin-left: 10px;
-    color: #3b82f6;
-    transition: color 0.3s, transform 0.3s;
+.option-label {
+    display: block; /* Make labels block elements for vertical layout */
+    margin: 0.5rem 0; /* Add some spacing */
+    background: #f3f4f6; /* Light background for options */
+    padding: 0.5rem;
+    border-radius: 5px; /* Rounded corners */
+    transition: background 0.3s;
 }
 
-#close-alert:hover {
-    color: #dc2626; /* Red-600 */
-    transform: scale(1.1);
+.option-label input {
+    margin-right: 0.5rem; /* Space between radio and label text */
 }
-
-.question h3 {
-    color: #60a5fa; /* Light blue */
-}
-
-.question-data {
-    padding: 2rem;
-    border-radius: 10px;
-    background-color: #1e293b; /* Darker background */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-    color: #ffffff;
-}
-
-.rating h4 {
-    color: #ffffff; /* Light blue */
-}
-
-
 </style>

@@ -8,14 +8,14 @@
 @section('content')
     <div class="container py-5">
         <!-- Titre Principal -->
-        <h1 class="text-center mb-5" style="font-family: 'Poppins', sans-serif; font-weight: 700; color: #4CAF50;">
+        <h1 class="text-center mb-5" style="font-family: 'Poppins', sans-serif; font-weight: 700; color: #00698f;">
             📚 Mes Devoirs Non Complétés
         </h1>
 
         <!-- Vérification si des devoirs existent -->
         @if($assignments->isEmpty())
             <p class="text-center" style="font-size: 1.2rem; color: #888;">
-                <i class="fas fa-check-circle" style="color: #4CAF50;"></i> Aucun devoir en attente.
+                <i class="fas fa-check-circle" style="color: #00698f;"></i> Aucun devoir en attente.
             </p>
         @else
             <!-- Grille de Cartes avec Espacement -->
@@ -89,7 +89,7 @@
 
         /* Bouton stylisé */
         .custom-btn {
-            background-color: #4CAF50;
+            background-color: #ffcf24;
             border: none;
             border-radius: 10px;
             transition: background-color 0.3s ease;
@@ -98,7 +98,7 @@
 
         /* Effet au survol du bouton */
         .custom-btn:hover {
-            background-color: #45a049;
+            background-color: #00698f;
         }
 
         /* Style pour le titre principal */

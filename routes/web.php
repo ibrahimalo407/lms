@@ -68,15 +68,15 @@ Route::group(['middleware' => ['isAdmin'], 'prefix' => 'admin', 'as' => 'admin.'
     Route::post('question_options_restore/{id}', [\App\Http\Controllers\Admin\QuestionOptionController::class, 'restore'])->name('question_options.restore');
     Route::delete('question_options_perma_del/{id}', [\App\Http\Controllers\Admin\QuestionOptionController::class, 'perma_del'])->name('question_options.perma_del');
 
-    Route::get('/admin/virtual-classes', [VirtualClassController::class, 'index'])->name('admin.virtual_classes.index');
-    Route::get('zoom/authorize', [VirtualClassController::class, 'authorizeZoom'])->name('zoom.authorize');
-    Route::get('zoom/callback', [VirtualClassController::class, 'handleZoomCallback'])->name('zoom.callback');
-    Route::get('virtual_classes', [VirtualClassController::class, 'index'])->name('virtual_classes.index');
-    Route::get('virtual_classes/create', [VirtualClassController::class, 'create'])->name('virtual_classes.create');
-    Route::post('virtual_classes', [VirtualClassController::class, 'store'])->name('virtual_classes.store');
-    Route::get('virtual_classes/{virtual_class}/edit', [VirtualClassController::class, 'edit'])->name('virtual_classes.edit');
-    Route::put('virtual_classes/{virtual_class}', [VirtualClassController::class, 'update'])->name('virtual_classes.update');
-    Route::delete('virtual_classes/{virtual_class}', [VirtualClassController::class, 'destroy'])->name('virtual_classes.destroy');
+    // Route::get('/admin/virtual-classes', [VirtualClassController::class, 'index'])->name('admin.virtual_classes.index');
+    // Route::get('zoom/authorize', [VirtualClassController::class, 'authorizeZoom'])->name('zoom.authorize');
+    // Route::get('zoom/callback', [VirtualClassController::class, 'handleZoomCallback'])->name('zoom.callback');
+    // Route::get('virtual_classes', [VirtualClassController::class, 'index'])->name('virtual_classes.index');
+    // Route::get('virtual_classes/create', [VirtualClassController::class, 'create'])->name('virtual_classes.create');
+    // Route::post('virtual_classes', [VirtualClassController::class, 'store'])->name('virtual_classes.store');
+    // Route::get('virtual_classes/{virtual_class}/edit', [VirtualClassController::class, 'edit'])->name('virtual_classes.edit');
+    // Route::put('virtual_classes/{virtual_class}', [VirtualClassController::class, 'update'])->name('virtual_classes.update');
+    // Route::delete('virtual_classes/{virtual_class}', [VirtualClassController::class, 'destroy'])->name('virtual_classes.destroy');
 
 
 

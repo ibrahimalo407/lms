@@ -69,15 +69,6 @@ class TestController extends Controller
 
         $test = Test::create($request->all());
 
-        // Notify students about the new test
-        $students = User::whereHas('roles', function ($query) {
-            $query->where('title', 'Student');
-        })->get();
-
-        foreach ($students as $student) {
-            $student->notify(new TestCreated($test));
-        }
-
         return redirect()->route('admin.tests.index');
     }
 

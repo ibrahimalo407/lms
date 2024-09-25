@@ -164,61 +164,51 @@
     <footer class="footer section">
         <div class="footer-container container grid">
             <div class="footer-content">
-                <h3 class="footer-title">Our Information</h3>
+                <h3 class="footer-title">Contact Information</h3>
                 <ul class="footer-list">
-                    <li>0766395253</li>
-                    <li>Casa, Omnia School</li>
+                    <li><i class="bx bxs-phone"></i> +212 0766395253</li>
+                    <li><i class="bx bxs-map"></i> Casa, Omnia School</li>
+                    <li><i class="bx bxs-envelope"></i> contact@omniaschool.com</li>
                 </ul>
             </div>
-
+    
             <div class="footer-content">
-                <h3 class="footer-title">Menu</h3>
+                <h3 class="footer-title">Explore</h3>
                 <ul class="footer-links">
-                    <li>
-                        <a href="#" class="footer-link">home</a>
-                    </li>
-                    <li>
-                        <a href="#" class="footer-link">course</a>
-                    </li>
-                    <li>
-                        <a href="#" class="footer-link">categories</a>
-                    </li>
+                    <li><a href="#" class="footer-link">Home</a></li>
+                    <li><a href="#" class="footer-link">Courses</a></li>
+                    <li><a href="#" class="footer-link">Categories</a></li>
+                    <li><a href="#" class="footer-link">About Us</a></li>
                 </ul>
             </div>
-
+    
             <div class="footer-content">
-                <h3 class="footer-title">Account</h3>
+                <h3 class="footer-title">Quick Links</h3>
                 <ul class="footer-links">
-                    <li>
-                        <a href="#" class="footer-link">register</a>
-                    </li>
-                    <li>
-                        <a href="#" class="footer-link">login</a>
-                    </li>
-                    <li>
-                        <a href="#" class="footer-link">faq</a>
-                    </li>
+                    <li><a href="#" class="footer-link">Register</a></li>
+                    <li><a href="#" class="footer-link">Login</a></li>
+                    <li><a href="#" class="footer-link">FAQ</a></li>
+                    <li><a href="#" class="footer-link">Support</a></li>
                 </ul>
             </div>
-
+    
             <div class="footer-content">
-                <h3 class="footer-title">Social Media</h3>
+                <h3 class="footer-title">Connect with Us</h3>
                 <ul class="footer-social">
-                    <a href="#" class="footer-social-link">
-                        <i class="bx bxl-facebook"></i>
-                    </a>
-                    <a href="#" class="footer-social-link">
-                        <i class="bx bxl-twitter"></i>
-                    </a>
-                    <a href="#" class="footer-social-link">
-                        <i class="bx bxl-instagram"></i>
-                    </a>
+                    <a href="#" class="footer-social-link"><i class="bx bxl-facebook"></i></a>
+                    <a href="#" class="footer-social-link"><i class="bx bxl-twitter"></i></a>
+                    <a href="#" class="footer-social-link"><i class="bx bxl-instagram"></i></a>
+                    <a href="#" class="footer-social-link"><i class="bx bxl-linkedin"></i></a>
                 </ul>
             </div>
         </div>
-
-        <span class="footer-copy ">&#169; Ibrahima Lo. Etudiant Omnia </span>
+    
+        <div class="footer-bottom">
+            <span class="footer-copy">&#169; 2024 Omnia School. All Rights Reserved.</span>
+            <span class="footer-privacy"><a href="#">Privacy Policy</a></span>
+        </div>
     </footer>
+    
 
     <a href="#" class="scroll-up" id="scroll-up">
         <i class="bx bx-up-arrow-alt scroll-up-icon"></i>

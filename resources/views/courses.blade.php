@@ -2,7 +2,7 @@
 
 @section('content')
     <section class="products section container" id="course">
-        <h2 class="section-title">My Course</h2>
+        <h2 class="section-title">Mes Cours</h2>
 
         <div class="featured-container grid">
             @forelse($purchased_courses as $purchased_course)
@@ -20,25 +20,25 @@
                                 @endif
                             @endfor
                         </div>
-                        <span class="products-price">${{ $purchased_course->price }}</span>
+                        <span class="products-price">{{ $purchased_course->price }}€</span>
                         @if ($purchased_course->students()->count() > 5)
                             <button class="products-button">
                                 Populaire
                             </button>
                         @endif
                         <span class="products-student">
-                            {{ $purchased_course->students()->count() }} students
+                            {{ $purchased_course->students()->count() }} étudiants
                         </span>
                     </a>
                 </article>
             @empty
-                <h2 style="text-align: center;grid-column: 1/5">You haven't purchased course yet</h2>
+                <h2 style="text-align: center;grid-column: 1/5">Vous n'avez pas encore acheté de cours</h2>
             @endforelse
         </div>
     </section>
 
     <section class="products section container" id="course">
-        <h2 class="section-title">All Course</h2>
+        <h2 class="section-title">Tous les Cours</h2>
 
         <div class="new-container">
             <div class="swiper new-swipper">
@@ -58,14 +58,14 @@
                                         @endif
                                     @endfor
                                 </div>
-                                <span class="products-price">${{ $course->price }}</span>
+                                <span class="products-price">{{ $course->price }}€</span>
                                 @if ($course->students()->count() > 3)
                                     <button class="products-button">
                                         Populaire
                                     </button>
                                 @endif
                                 <span class="products-student">
-                                    {{ $course->students()->count() }} students
+                                    {{ $course->students()->count() }} étudiants
                                 </span>
                             </a>
                         </article>

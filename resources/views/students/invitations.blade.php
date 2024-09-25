@@ -111,6 +111,9 @@
     .badge-warning {
         background-color: #ffc107; /* Bootstrap warning color */
         color: white;
+        padding: 5px;
+        border-radius: 5px;
+        
     }
 
     .badge-success {
