@@ -74,11 +74,11 @@
                                     <i class="bx bx-task"></i> Mes Devoirs
                                 </a>
                             </li>
-                            <li class="nav-item">
+                            {{-- <li class="nav-item">
                                 <a href="{{ route('student.grades') }}" class="nav-link">
                                     <i class="bx bx-star"></i> Mes Notes
                                 </a>
-                            </li>
+                            </li> --}}
                         @endif
                     @endauth
                 </ul>
