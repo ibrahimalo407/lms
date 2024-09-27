@@ -3,8 +3,8 @@
 @section('content')
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="mb-0">Pedagogical Paths</h1>
-        <a href="{{ route('admin.pedagogical-paths.create') }}" class="btn btn-primary">
+        <h1 class="text-primary">Pedagogical Paths</h1>
+        <a href="{{ route('admin.pedagogical-paths.create') }}" class="btn btn-primary btn-lg shadow-lg">
             <i class="fas fa-plus"></i> New Pedagogical Path
         </a>
     </div>
@@ -26,12 +26,12 @@
     <div class="row">
         @foreach ($pedagogicalPaths as $path)
             <div class="col-md-6 mb-4">
-                <div class="card shadow-sm h-100 border-0 rounded">
+                <div class="card shadow-sm h-100 border-0 rounded" style="transition: transform 0.3s ease, box-shadow 0.3s ease; animation: fadeIn 0.5s;">
                     <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">{{ $path->title }}</h5>
-                        <p class="card-text text-truncate">{{ Str::limit($path->description, 100) }}</p>
+                        <h5 class="card-title text-primary">{{ $path->title }}</h5>
+                        <p class="card-text text-muted text-truncate">{{ Str::limit($path->description, 100) }}</p>
                         @if (Str::length($path->description) > 100)
-                            <a href="#" class="text-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $path->description }}">Read more</a>
+                            <a href="#" class="text-info" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $path->description }}">Read more</a>
                         @endif
 
                         @if($path->presentation_video)
@@ -44,7 +44,7 @@
                         @endif
 
                         <div class="mb-2">
-                            <strong>Courses:</strong>
+                            <strong class="text-primary">Courses:</strong>
                             <ul class="list-unstyled mt-2">
                                 @foreach ($path->courses as $course)
                                     <li><span class="badge bg-primary">{{ $course->title }}</span></li>
@@ -71,12 +71,39 @@
     </div>
 
     <div class="d-flex justify-content-end mt-4">
-        <a href="{{ route('admin.pedagogical-paths.create') }}" class="btn btn-primary btn-lg rounded-circle shadow position-fixed" style="bottom: 20px; right: 20px;">
+        <a href="{{ route('admin.pedagogical-paths.create') }}" class="btn btn-primary btn-lg rounded-circle shadow-lg position-fixed" style="bottom: 20px; right: 20px; transition: transform 0.3s ease;">
             <i class="fas fa-plus"></i>
         </a>
     </div>
 </div>
 @endsection
+
+@push('styles')
+<style>
+    .card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    .btn:hover {
+        transform: scale(1.05);
+    }
+
+    .btn-outline-primary:hover, .btn-outline-danger:hover {
+        background-color: #0056b3;
+        color: white;
+    }
+</style>
+@endpush
 
 @push('scripts')
 <script>

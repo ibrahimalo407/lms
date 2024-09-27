@@ -2,10 +2,10 @@
 
 @section('content')
 <div class="container mt-5">
-    <div class="card shadow-sm">
-        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-            <h1 class="mb-0">Groups</h1>
-            <a href="{{ route('admin.groups.create') }}" class="btn btn-success">
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+            <h1 class="mb-0" style="font-size: 1.5rem;">Groups</h1>
+            <a href="{{ route('admin.groups.create') }}" class="btn btn-outline-light">
                 <i class="fas fa-plus-circle"></i> New Group
             </a>
         </div>
@@ -25,8 +25,8 @@
             @endif
 
             <div class="table-responsive">
-                <table class="table table-bordered table-hover align-middle">
-                    <thead class="table-dark">
+                <table class="table table-bordered align-middle">
+                    <thead class="table-light">
                         <tr>
                             <th>Name</th>
                             <th>Students</th>
@@ -93,3 +93,48 @@
     });
 </script>
 @endpush
+
+<style>
+    .card {
+        border-radius: 0.5rem;
+        overflow: hidden;
+    }
+
+    .card-header {
+        background-color: #343a40;
+        border-bottom: none;
+    }
+
+    .btn-outline-light {
+        border-color: rgba(255, 255, 255, 0.5);
+        color: #fff;
+    }
+
+    .btn-outline-light:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    .table th, .table td {
+        padding: 1rem;
+        text-align: left;
+        vertical-align: middle;
+    }
+
+    .table-light th {
+        background-color: #f8f9fa;
+        font-weight: 600;
+    }
+
+    .alert {
+        border-radius: 0.25rem;
+    }
+
+    .badge {
+        font-size: 0.9rem;
+    }
+</style>

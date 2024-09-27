@@ -1,9 +1,9 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="card">
+<div class="card shadow-lg rounded">
     <div class="card-header" style="background-color: #1E40AF; color: #FFFFFF;">
-        Edit Course
+        <h5 class="mb-0">Edit Course</h5>
     </div>
 
     <div class="card-body">
@@ -84,10 +84,30 @@
                 @enderror
             </div>
 
-            <div>
-                <button class="btn btn-danger" type="submit" style="background-color: #B00020; color: #FFFFFF;">Save</button>
+            <div class="d-flex justify-content-between">
+                <button class="btn btn-danger" type="submit" style="background-color: #B00020; color: #FFFFFF; border-radius: 25px; transition: background-color 0.3s;">Save</button>
+                <a href="{{ route('admin.courses.index') }}" class="btn btn-secondary" style="border-radius: 25px; transition: background-color 0.3s;">Cancel</a>
             </div>
         </form>
     </div>
 </div>
+
+<style>
+    .card {
+        border-radius: 15px;
+        margin: 20px 0;
+    }
+
+    .form-group label {
+        font-weight: 600;
+    }
+
+    .btn {
+        transition: transform 0.2s;
+    }
+
+    .btn:hover {
+        transform: scale(1.05);
+    }
+</style>
 @endsection

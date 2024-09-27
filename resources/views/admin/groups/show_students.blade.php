@@ -1,11 +1,87 @@
 @extends('layouts.admin')
 
 @section('content')
+<style>
+    body {
+        background-color: #f8f9fa; /* Light background for better contrast */
+    }
+
+    .card-header {
+        background-color: #007bff; /* Primary blue color */
+    }
+
+    h1 {
+        color: #ffffff; /* White text for header */
+    }
+
+    .badge {
+        background-color: #f8f9fa; /* Light background for badges */
+        color: #343a40; /* Dark text for contrast */
+    }
+
+    .alert {
+        border-radius: 0.25rem; /* Rounded corners for alerts */
+    }
+
+    .table {
+        color: #333; /* Dark text for table for better readability */
+    }
+
+    .table-dark {
+        background-color: #343a40; /* Dark background for header */
+        color: #ffffff; /* White text for header */
+    }
+
+    .table th {
+        background-color: #007bff; /* Blue background for header */
+        color: #fff; /* White text for header */
+    }
+
+    .table td {
+        vertical-align: middle; /* Center align text in cells */
+        transition: background-color 0.2s ease; /* Transition for hover effect */
+    }
+
+    .table tr:hover {
+        background-color: #e9ecef; /* Light gray background on row hover */
+    }
+
+    .btn {
+        transition: transform 0.2s ease; /* Transition for button hover effect */
+    }
+
+    .btn:hover {
+        transform: translateY(-2px); /* Lift effect on hover */
+    }
+
+    .btn-warning {
+        background-color: #ffc107; /* Bootstrap warning color */
+        border: none;
+    }
+
+    .btn-danger {
+        background-color: #dc3545; /* Bootstrap danger color */
+        border: none;
+    }
+
+    .btn-warning:hover {
+        background-color: #e0a800; /* Darker shade on hover */
+    }
+
+    .btn-danger:hover {
+        background-color: #c82333; /* Darker shade on hover */
+    }
+
+    .table-responsive {
+        margin-top: 20px; /* Spacing for the table */
+    }
+</style>
+
 <div class="container mt-5">
     <div class="card shadow-sm">
-        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+        <div class="card-header d-flex justify-content-between align-items-center">
             <h1 class="mb-0">{{ $group->name }} - Students</h1>
-            <span class="badge bg-light text-dark">{{ $group->users->count() }} Students</span>
+            <span class="badge">{{ $group->users->count() }} Students</span>
         </div>
         <div class="card-body">
             @if (session('success'))

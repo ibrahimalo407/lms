@@ -9,6 +9,7 @@
                 </a>
             </li>
 
+            
             <!-- Request -->
             @can('course_access')
             <li class="nav-item">

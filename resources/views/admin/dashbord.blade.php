@@ -2,13 +2,13 @@
 
 @section('content')
 <div class="container-fluid">
-    <h2 class="mt-4 mb-4">Tableau de bord</h2>
+    <h2 class="mt-4 mb-4 text-white">Tableau de bord</h2>
 
     <!-- Graphiques -->
     <div class="row">
         <div class="col-lg-6 mb-4">
-            <div class="card shadow-sm">
-                <div class="card-header py-3 bg-primary text-white">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white">
                     <h6 class="m-0 font-weight-bold">Nombre de cours par mois</h6>
                 </div>
                 <div class="card-body">
@@ -17,8 +17,8 @@
             </div>
         </div>
         <div class="col-lg-6 mb-4">
-            <div class="card shadow-sm">
-                <div class="card-header py-3 bg-primary text-white">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white">
                     <h6 class="m-0 font-weight-bold">Les 10 leçons les plus récentes</h6>
                 </div>
                 <div class="card-body">
@@ -40,8 +40,8 @@
 
     <div class="row">
         <div class="col-lg-6 mb-4">
-            <div class="card shadow-sm">
-                <div class="card-header py-3 bg-primary text-white">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white">
                     <h6 class="m-0 font-weight-bold">Nombre d'inscriptions par mois</h6>
                 </div>
                 <div class="card-body">
@@ -50,8 +50,8 @@
             </div>
         </div>
         <div class="col-lg-6 mb-4">
-            <div class="card shadow-sm">
-                <div class="card-header py-3 bg-primary text-white">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white">
                     <h6 class="m-0 font-weight-bold">Graphique des meilleurs étudiants</h6>
                 </div>
                 <div class="card-body">
@@ -103,7 +103,10 @@
                     plugins: {
                         legend: {
                             display: true,
-                            position: 'bottom'
+                            position: 'bottom',
+                            labels: {
+                                color: '#fff'
+                            }
                         },
                         tooltip: {
                             enabled: true
@@ -143,7 +146,10 @@
                     plugins: {
                         legend: {
                             display: true,
-                            position: 'bottom'
+                            position: 'bottom',
+                            labels: {
+                                color: '#fff'
+                            }
                         },
                         tooltip: {
                             enabled: true
@@ -190,7 +196,10 @@
                 plugins: {
                     legend: {
                         display: true,
-                        position: 'bottom'
+                        position: 'bottom',
+                        labels: {
+                            color: '#fff'
+                        }
                     },
                     tooltip: {
                         enabled: true

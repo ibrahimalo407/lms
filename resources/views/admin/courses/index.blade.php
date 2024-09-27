@@ -4,7 +4,7 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h3 class="page-title text-primary">Course Management</h3>
     @can('course_create')
-    <a href="{{ route('admin.courses.create') }}" class="btn btn-primary align-middle">Add New Course</a>
+    <a href="{{ route('admin.courses.create') }}" class="btn btn-primary align-middle"><i class="fas fa-plus-circle"></i> Add New Course</a>
     @endcan
 </div>
 
@@ -19,8 +19,11 @@
     </ul>
 </div>
 
-<div class="card">
-    <div class="card-header bg-primary text-white">Courses List</div>
+<div class="card shadow-lg rounded">
+    <div class="card-header bg-primary text-white d-flex align-items-center">
+        <i class="fas fa-list fa-lg mr-2"></i>
+        <h5 class="mb-0">Courses List</h5>
+    </div>
 
     <div class="card-body">
         <div class="table-responsive">
@@ -58,25 +61,29 @@
                         <td>{{ $course->price }}</td>
                         <td><img width="150" src="{{ Storage::url($course->course_image) }}" alt="{{ $course->title }}" class="img-thumbnail"></td>
                         <td>{{ $course->start_date }}</td>
-                        <td>{{ $course->published }}</td>
+                        <td>{{ $course->published ? 'Active' : 'Inactive' }}</td>
                         <td>
                             @if(request('show_deleted') == 1)
-                            <form action="{{ route('admin.courses.restore', $course->id) }}" method="POST" onsubmit="return confirm('Are you sure ?');" class="d-inline-block">
-                                @csrf
-                                <button type="submit" class="btn btn-warning btn-sm vertical-align: middle">Restore</button>
-                            </form>
-                            <form action="{{ route('admin.courses.perma_del', $course->id) }}" method="POST" onsubmit="return confirm('Are you sure ?');" class="d-inline-block">
-                                @csrf
-                                @method('delete')
-                                <button type="submit" class="btn btn-danger btn-sm vertical-align: middle">Delete</button>
-                            </form>
+                            <div class="btn-group" role="group">
+                                <form action="{{ route('admin.courses.restore', $course->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to restore this course?');" class="d-inline-block">
+                                    @csrf
+                                    <button type="submit" class="btn btn-warning btn-sm"><i class="fas fa-undo"></i> Restore</button>
+                                </form>
+                                <form action="{{ route('admin.courses.perma_del', $course->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this course permanently?');" class="d-inline-block">
+                                    @csrf
+                                    @method('delete')
+                                    <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i> Delete</button>
+                                </form>
+                            </div>
                             @else
-                            <a class="btn btn-primary btn-sm vertical-align: middle" href="{{ route('admin.courses.edit', $course->id) }}">Edit</a>
-                            <form action="{{ route('admin.courses.destroy', $course->id) }}" method="POST" onsubmit="return confirm('Are you sure ?');" class="d-inline-block">
-                                @csrf
-                                @method('delete')
-                                <button type="submit" class="btn btn-warning btn-sm vertical-align: middle">Delete</button>
-                            </form>
+                            <div class="btn-group" role="group">
+                                <a class="btn btn-primary btn-sm" href="{{ route('admin.courses.edit', $course->id) }}"><i class="fas fa-edit"></i> Edit</a>
+                                <form action="{{ route('admin.courses.destroy', $course->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this course?');" class="d-inline-block">
+                                    @csrf
+                                    @method('delete')
+                                    <button type="submit" class="btn btn-warning btn-sm"><i class="fas fa-trash-alt"></i> Delete</button>
+                                </form>
+                            </div>
                             @endif
                         </td>
                     </tr>
@@ -90,4 +97,45 @@
         </div>
     </div>
 </div>
+
+<style>
+    .card {
+        border-radius: 15px;
+        margin: 20px 0;
+    }
+
+    .table th, .table td {
+        vertical-align: middle;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    .filter-links a {
+        transition: color 0.3s;
+    }
+
+    .filter-links a:hover {
+        color: #0056b3;
+    }
+
+    .btn {
+        border-radius: 25px;
+        transition: background-color 0.3s, transform 0.2s;
+        margin-right: 5px; /* Space between buttons */
+    }
+
+    .btn:last-child {
+        margin-right: 0; /* Remove margin from the last button */
+    }
+
+    .btn:hover {
+        transform: scale(1.05);
+    }
+
+    .badge-info {
+        background-color: #17a2b8; /* Adjust badge color */
+    }
+</style>
 @endsection

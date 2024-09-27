@@ -30,7 +30,7 @@ class GroupController extends Controller
         $pedagogicalPaths = PedagogicalPath::all();
         $courses = Course::all();
 
-        return view('admin.groups.create', compact('students', 'pedagogicalPaths'));
+        return view('admin.groups.create', compact('students', 'pedagogicalPaths','courses'));
     }
 
     public function edit($id)
