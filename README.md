@@ -16,7 +16,7 @@ This project is a Learning Management System built using Laravel 8. It provides 
 
 ## Screenshots
 
-![Preview Image](/preview.jpg)
+![Preview Image](/ url("./images/lms-image-education.png").jpg)
 
 ## Run Locally
 
